@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby -rubygems
+require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader' if development?
+require 'haml'
 
 require 'model.rb'
 require 'experiments.rb'
@@ -17,13 +19,17 @@ get '/create' do
 end
 
 get '/exp/:experiment' do |experiment|
-  e = Experiment.where(:name => experiment).first
+  @exp = Experiment.where(:name => experiment).first
 
-  if e.nil?
-    "Invalid experiment"
-    #TODO: Redirect to an HTTP error page
-  else
-    "Displaying experiment #{e.name}"
+  if @exp.nil?
+    body "Invalid experiment"
+    status 404
+    return
   end
 
+  @scripts = @exp.scripts
+  @onload = @exp.onload
+
+  haml :experiment
 end
+

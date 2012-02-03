@@ -2,10 +2,12 @@
 
 require 'active_record'
 
-ActiveRecord::Base.establish_connection({:adapter=>'sqlite3',:database=>'index.db',:pool=>5,:timeout=>5000})
+ActiveRecord::Base.establish_connection({:adapter=>'sqlite3',:database=>'index.db',:pool=>50,:timeout=>5000})
 
 class Experiment < ActiveRecord::Base
   has_many :canvas
+
+  serialize :scripts, Array
 end
 
 class Canvas < ActiveRecord::Base
@@ -16,6 +18,8 @@ class Create < ActiveRecord::Migration
   def up
     create_table :experiments do |t|
       t.string :name
+      t.string :scripts
+      t.string :onload
     end
 
     create_table :canvas do |t|
@@ -26,7 +30,16 @@ class Create < ActiveRecord::Migration
   end
 
   def down
-    drop_table :canvas
+    begin
+      drop_table :experiments
+    rescue
+      puts "table 'experiments' doesn't exist"
+    end
+    begin
+      drop_table :canvas
+    rescue
+      puts "table 'canvas' doesn't exist"
+    end
   end
 end
 
