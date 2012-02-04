@@ -27,6 +27,9 @@ function draw() {
   var pixels = document.getElementById("pixels");
   pixels.innerHTML = JSON.stringify(nonzero).replace(/,\"/gi, ', \"');
 
+  var fi = $('#forminput');
+  fi.val(JSON.stringify(nonzero).replace(/,\"/gi, ', \"'));
+
   //var comparisons = document.getElementById("comparisons");
   //var samples = getSamples();
   //for(name in samples) {

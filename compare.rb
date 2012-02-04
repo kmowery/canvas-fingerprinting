@@ -33,3 +33,17 @@ get '/exp/:experiment' do |experiment|
   haml :experiment
 end
 
+post '/exp/:experiment/results' do |experiment|
+  # store the response
+  # redirect to id page
+  puts params[:pixels]
+
+  redirect "/exp/#{experiment}/results/0"
+
+end
+
+get '/exp/:experiment/results/:id' do |experiment, id|
+  # get the response, display it
+  id
+end
+
