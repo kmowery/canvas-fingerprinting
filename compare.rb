@@ -28,7 +28,6 @@ get '/exp/:experiment' do |experiment|
   end
 
   @scripts = @exp.scripts
-  @onload = @exp.onload
 
   haml :experiment
 end
@@ -39,7 +38,6 @@ post '/exp/:experiment/results' do |experiment|
   puts params[:pixels]
 
   redirect "/exp/#{experiment}/results/0"
-
 end
 
 get '/exp/:experiment/results/:id' do |experiment, id|

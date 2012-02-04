@@ -19,7 +19,6 @@ class Create < ActiveRecord::Migration
     create_table :experiments do |t|
       t.string :name
       t.string :scripts
-      t.string :onload
     end
 
     create_table :canvas do |t|

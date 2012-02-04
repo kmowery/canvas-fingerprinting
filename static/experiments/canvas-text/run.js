@@ -59,11 +59,7 @@ function draw() {
   //}
 }
 
-var onloadRun = false;
-function onloadHandler() {
-  if(!onloadRun) {
-    onloadRun = true;
-
+$(document).ready(function() {
     if(!supportsCanvas()) {
       alert("No canvas support");
     }
@@ -72,6 +68,5 @@ function onloadHandler() {
     }
 
     draw();
-  }
-}
+});
 
