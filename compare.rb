@@ -10,6 +10,14 @@ require 'experiments.rb'
 set :public_folder, File.dirname(__FILE__) + '/static'
 enable :sessions
 
+helpers do
+  def jsonify(json)
+    "JSON.parse('" + json.gsub("'", "\'") + "')"
+  end
+end
+
+
+
 get '/' do
   'Hello world! oh no robot hurray cool robot things so many'
 end
