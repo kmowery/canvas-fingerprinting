@@ -64,9 +64,25 @@ get '/exp/:experiment/results/:id' do |experiment, id|
 
   # Policy: we store one sample per user-agent.
   # When and if we discover a collision here, we'll revisit.
-  @result = Canvas.where(:id => id,
-                         :experiment_id => @exp.id).first
+  @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
 
   haml :result
 end
 
+get '/exp/:experiment/results/:id/json' do |experiment, id|
+  @exp = Experiment.where(:name => experiment).first
+  @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
+  body @result.canvas_json
+end
+
+get '/exp/:experiment/compare/:id' do |experiment, id|
+  # get the response, display it
+  @exp = Experiment.where(:name => experiment).first
+
+  # Policy: we store one sample per user-agent.
+  # When and if we discover a collision here, we'll revisit.
+  @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
+  @results = Canvas.where(:experiment_id => @exp.id)
+
+  haml :diff
+end

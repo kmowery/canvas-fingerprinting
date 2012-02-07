@@ -10,6 +10,6 @@
       -@scripts.each do |src|
         %script{:type=>"text/javascript", :src=>"#{src}"}
     %title Experiment Away
-  %body{:onload => "#{@onload}"}
+  %body
     = yield
 

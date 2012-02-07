@@ -1,12 +1,18 @@
+%script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
+:javascript
+  $(document).ready(function() {
+    render("scratch", '#{@result.canvas_json.gsub("'", "\'")}');
+  });
 
 #experiment
-  %p Experiment: "#{@exp.name}"
-  %p Result #{@result.id}
+  %h1 Experiment: "#{@exp.name}"
+  %h2 Result #{@result.id}
   - if not @result.title.nil?
-    %p #{@result.title}
+    %h3 Title: #{@result.title}
+  %h3 User Agent: #{@result.useragent}
 
   = render :haml, :canvas, :layout => false
 
-  %p Pixels
+  %p Pixels:
   #pixels
 
