@@ -1,7 +1,9 @@
 %script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
 :javascript
   $(document).ready(function() {
-    render("scratch", '#{@result.canvas_json.gsub("'", "\'")}');
+    var prevent_xss = '#{@result.canvas_json.gsub("'", "\'")}';
+    render("scratch", prevent_xss);
+    document.getElementById("pixels").innerHTML = prevent_xss;
   });
 
 #experiment

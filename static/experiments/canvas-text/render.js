@@ -1,7 +1,6 @@
 
 function render(elementid, canvasjson) {
   renderdiff(elementid, canvasjson, null);
-  document.getElementById("pixels").innerHTML = canvasjson.replace("\'", "'");
 }
 
 function renderdiff(elementid, canvasjson1, canvasjson2) {
