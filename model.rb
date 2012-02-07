@@ -23,7 +23,8 @@ class Create < ActiveRecord::Migration
 
     create_table :canvas do |t|
       t.integer :experiment_id
-      t.string :platform
+      t.string :useragent
+      t.string :title
       t.string :canvas_json
     end
   end

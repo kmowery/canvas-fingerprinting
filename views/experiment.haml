@@ -2,9 +2,12 @@
 #experiment
   %p Experiment: "#{@exp.name}"
 
-  %canvas#scratch{:width=>140, :height=>15}
+  = render :haml, :canvas, :layout => false
 
   %form#submit{:action=>"#{@exp.name}/results", :method=>"post"}
+    %p
+      Title:
+      %input#title{:name=>"title", :type=>"text"}
     %input#forminput{:name=>"pixels", :type=>"text"}
     %input{:type=>"submit", :value=>"Submit"}
 
