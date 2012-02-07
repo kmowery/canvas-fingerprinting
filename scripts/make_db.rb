@@ -5,3 +5,4 @@ require 'model.rb'
 c = Create.new
 c.down
 c.up
+
