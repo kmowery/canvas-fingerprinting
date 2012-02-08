@@ -2,7 +2,7 @@
 :javascript
   $(document).ready(function() {
     var prime = #{ @result.to_json }["canvas"]
-    var prime_pixels = JSON.parse( prime["canvas_json"] )
+    var prime_pixels = JSON.parse( prime["pixels"] )
     var multipixels = [
       #{
         @results.map {|result|
@@ -30,7 +30,7 @@
       p.appendChild(c);
       attachment_point.appendChild(p);
 
-      var pixels = JSON.parse(multipixels[id]["canvas_json"]);
+      var pixels = JSON.parse(multipixels[id]["pixels"]);
       renderdiff(idgen, prime_pixels, pixels);
     }
   });

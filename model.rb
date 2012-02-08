@@ -17,7 +17,7 @@ class Canvas < ActiveRecord::Base
   def to_json(*a)
     {
       'json_class'      => self.class.name,
-      'data'            => [ id, useragent, title, canvas_json ]
+      'data'            => [ id, useragent, title, pixels ]
     }.to_json(*a)
   end
 end
@@ -33,7 +33,7 @@ class Create < ActiveRecord::Migration
       t.integer :experiment_id
       t.string :useragent
       t.string :title
-      t.string :canvas_json
+      t.string :pixels
     end
   end
 

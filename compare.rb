@@ -71,7 +71,7 @@ post '/exp/:experiment/results' do |experiment|
   @result.experiment_id = @exp.id
   @result.useragent = env["HTTP_USER_AGENT"]
   @result.title = params["title"]
-  @result.canvas_json = params["pixels"]
+  @result.pixels = params["pixels"]
   @result.save
 
   redirect link_to(:result, @exp, @result)
@@ -92,7 +92,7 @@ end
 get '/exp/:experiment/results/:id/json' do |experiment, id|
   @exp = Experiment.where(:name => experiment).first
   @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
-  body @result.canvas_json
+  body @result.pixels
 end
 
 get '/exp/:experiment/compare/:id' do |experiment, id|

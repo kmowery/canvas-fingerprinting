@@ -2,8 +2,8 @@
 :javascript
   $(document).ready(function() {
     var prevent_xss = #{ @result.to_json }["canvas"];
-    render("scratch", JSON.parse(prevent_xss["canvas_json"]));
-    document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["canvas_json"])).replace(/,"/gi, ', "');
+    render("scratch", JSON.parse(prevent_xss["pixels"]));
+    document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["pixels"])).replace(/,"/gi, ', "');
   });
 
 #experiment
