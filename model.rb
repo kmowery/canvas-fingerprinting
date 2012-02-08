@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby -w -rubygems
 
 require 'active_record'
+require 'json'
 
 ActiveRecord::Base.establish_connection({:adapter=>'sqlite3',:database=>'index.db',:pool=>50,:timeout=>5000})
 
@@ -12,6 +13,13 @@ end
 
 class Canvas < ActiveRecord::Base
   belongs_to :experiment
+
+  def to_json(*a)
+    {
+      'json_class'      => self.class.name,
+      'data'            => [ id, useragent, title, canvas_json ]
+    }.to_json(*a)
+  end
 end
 
 class Create < ActiveRecord::Migration

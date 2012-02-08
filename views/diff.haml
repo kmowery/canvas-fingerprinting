@@ -1,11 +1,11 @@
 %script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
 :javascript
   $(document).ready(function() {
-    var prime = #{ jsonify(@result.canvas_json) }
+    var prime = #{ @result.to_json }["canvas"]
     var multipixels = [
       #{
         @results.map {|result|
-          jsonify(result.canvas_json)
+          result.to_json + '["canvas"]';
         }.join(', ')
       }
     ];

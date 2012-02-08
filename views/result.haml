@@ -1,9 +1,9 @@
 %script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
 :javascript
   $(document).ready(function() {
-    var prevent_xss = #{ jsonify(@result.canvas_json) };
-    render("scratch", prevent_xss);
-    document.getElementById("pixels").innerHTML = JSON.stringify(prevent_xss).replace(/,\"/gi, ', "');
+    var prevent_xss = #{ @result.to_json }["canvas"];
+    render("scratch", JSON.parse(prevent_xss["canvas_json"]));
+    document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["canvas_json"])).replace(/,"/gi, ', "');
   });
 
 #experiment
