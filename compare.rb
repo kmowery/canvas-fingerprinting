@@ -42,7 +42,7 @@ before '/exp/:experiment*' do |experiment, trash|
   end
 end
 
-get '/exp/:experiment' do |experiment|
+get '/exp/:experiment/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
   @scripts = @exp.scripts
 
@@ -76,11 +76,6 @@ post '/exp/:experiment/results' do |experiment|
 
   redirect link_to(:result, @exp, @result)
   #redirect "/exp/#{experiment}/results/#{@result.id}"
-
-  puts
-  puts @result
-  puts @exp.id
-  puts params["title"]
 end
 
 get '/exp/:experiment/results/:id' do |experiment, id|

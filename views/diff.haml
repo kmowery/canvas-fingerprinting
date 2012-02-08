@@ -36,11 +36,12 @@
   });
 
 #experiment
-  %h1 Experiment: "#{@exp.name}"
+  %h1
+    Experiment
+    %a{:href=>"#{link_to(:exp, @exp)}"} #{@exp.name}
   %h2 Result #{@result.id}
   - if not @result.title.nil?
     %h3 Title: #{@result.title}
-  %h3 User Agent: #{@result.useragent}
 
   #diffs
 
