@@ -2,28 +2,36 @@
 :javascript
   $(document).ready(function() {
     var prime = #{ @result.to_json }["canvas"]
+    var prime_pixels = JSON.parse( prime["canvas_json"] )
     var multipixels = [
       #{
         @results.map {|result|
           result.to_json + '["canvas"]';
-        }.join(', ')
+        }.join(',\n')
       }
     ];
     var canvas = document.getElementById("scratch");
     var attachment_point = document.getElementById("diffs");
     var idgen = 0;
 
-    for(var pixels in multipixels) {
+    for(var id in multipixels) {
       idgen += 1;
+
+      var p = document.createElement("p");
+      var ua = document.createElement("div");
+      ua.innerHTML = multipixels[id]["useragent"];
 
       var c = document.createElement("canvas");
       c.setAttribute('width', canvas.width);
       c.setAttribute('height', canvas.height);
       c.setAttribute('id', idgen);
 
-      attachment_point.appendChild(c);
+      p.appendChild(ua);
+      p.appendChild(c);
+      attachment_point.appendChild(p);
 
-      renderdiff(idgen, prime, multipixels[pixels]);
+      var pixels = JSON.parse(multipixels[id]["canvas_json"]);
+      renderdiff(idgen, prime_pixels, pixels);
     }
   });
 
