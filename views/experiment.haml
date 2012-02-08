@@ -1,7 +1,9 @@
 %script{:type=>"text/javascript", :src=>"/experiments/canvas-text/run.js"}
 
 #experiment
-  %p Experiment: "#{@exp.name}"
+  %h1
+    Experiment
+    %a{:href=>"#{link_to(:exp, @exp)}"} #{@exp.name}
 
   = render :haml, :canvas, :layout => false
 

@@ -74,7 +74,8 @@ post '/exp/:experiment/results' do |experiment|
   @result.canvas_json = params["pixels"]
   @result.save
 
-  redirect "/exp/#{experiment}/results/#{@result.id}"
+  redirect link_to(:result, @exp, @result)
+  #redirect "/exp/#{experiment}/results/#{@result.id}"
 
   puts
   puts @result
