@@ -1,0 +1,41 @@
+%script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
+:javascript
+  $(document).ready(function() {
+    var prime = #{ jsonify(@result.canvas_json) }
+    var multipixels = [
+      #{
+        @results.map {|result|
+          jsonify(result.canvas_json)
+        }.join(', ')
+      }
+    ];
+    var canvas = document.getElementById("scratch");
+    var attachment_point = document.getElementById("diffs");
+    var idgen = 0;
+
+    for(var pixels in multipixels) {
+      idgen += 1;
+
+      var c = document.createElement("canvas");
+      c.setAttribute('width', canvas.width);
+      c.setAttribute('height', canvas.height);
+      c.setAttribute('id', idgen);
+
+      attachment_point.appendChild(c);
+
+      renderdiff(idgen, prime, multipixels[pixels]);
+    }
+  });
+
+#experiment
+  %h1 Experiment: "#{@exp.name}"
+  %h2 Result #{@result.id}
+  - if not @result.title.nil?
+    %h3 Title: #{@result.title}
+  %h3 User Agent: #{@result.useragent}
+
+  #diffs
+
+  #hide{:style=>"display:none;"}
+    = render :haml, :canvas, :layout => false
+
