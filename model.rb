@@ -5,6 +5,8 @@ require 'json'
 
 ActiveRecord::Base.establish_connection({:adapter=>'sqlite3',:database=>'index.db',:pool=>50,:timeout=>5000})
 
+ActiveRecord::Base.include_root_in_json = false
+
 class Experiment < ActiveRecord::Base
   has_many :canvas
 
@@ -16,8 +18,10 @@ class Canvas < ActiveRecord::Base
 
   def to_json(*a)
     {
-      'json_class'      => self.class.name,
-      'data'            => [ id, useragent, title, pixels ]
+      'id' => id,
+      'useragent' => useragent,
+      'title' => title,
+      'pixels' => pixels
     }.to_json(*a)
   end
 end

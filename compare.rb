@@ -86,6 +86,9 @@ get '/exp/:experiment/results/:id' do |experiment, id|
   # When and if we discover a collision here, we'll revisit.
   @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
 
+  puts @result
+  puts @result.to_json
+
   haml :result
 end
 
