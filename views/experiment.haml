@@ -1,4 +1,5 @@
-%script{:type=>"text/javascript", :src=>"/experiments/canvas-text/run.js"}
+-@exp.scripts.each do |src|
+  %script{:type=>"text/javascript", :src=>"#{src}"}
 
 #experiment
   %h1 Experiment: #{@exp.name}
