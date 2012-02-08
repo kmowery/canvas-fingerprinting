@@ -28,7 +28,7 @@ get '/create' do
 end
 
 
-before '/exp/:experiment*' do |experiment|
+before '/exp/:experiment*' do |experiment, trash|
   if @exp = Experiment.where(:name => experiment).count == 0
     halt 404, "Invalid experiment"
   end
@@ -94,3 +94,4 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
 
   haml :diff
 end
+
