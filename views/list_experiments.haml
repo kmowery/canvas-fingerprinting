@@ -1,0 +1,11 @@
+
+%h1 Experiments
+
+%ul
+  - @experiments.each do |exp|
+    %li
+      %a{:href=>"#{link_to(:exp, exp)}"}
+        = exp.name
+      %a{:href=>"#{link_to(:results, exp)}"}
+        (Results)
+
