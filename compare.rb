@@ -14,19 +14,27 @@ helpers do
   def jsonify(json)
     "JSON.parse('" + json.gsub("'", "\'") + "')"
   end
+
+  def link_to(where, exp, result = nil)
+    case where
+    when :exp
+      return "/exp/#{exp[:name]}"
+    when :results
+      return "/exp/#{exp[:name]}/results/"
+    when :result
+      return "/exp/#{exp[:name]}/results/#{result[:id]}"
+    when :diff
+      return "/exp/#{exp[:name]}/compare/#{result[:id]}"
+    end
+  end
 end
 
 
 
 get '/' do
-  'Hello world! oh no robot hurray cool robot things so many'
+  @experiments = Experiment.all
+  haml :list_experiments
 end
-
-get '/create' do
-  c = Canvas.create(:experiment => "dev", :platform => "OSX", :canvas_json => "[1,2,3]")
-  c.platform
-end
-
 
 before '/exp/:experiment*' do |experiment, trash|
   if @exp = Experiment.where(:name => experiment).count == 0
@@ -40,6 +48,14 @@ get '/exp/:experiment' do |experiment|
 
   haml :experiment
 end
+
+get '/exp/:experiment/results/?' do |experiment|
+  @exp = Experiment.where(:name => experiment).first
+  @results = Canvas.where(:experiment_id => @exp.id)
+
+  haml :list_results
+end
+
 
 post '/exp/:experiment/results' do |experiment|
   @exp = Experiment.where(:name => experiment).first
