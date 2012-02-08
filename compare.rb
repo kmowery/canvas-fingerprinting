@@ -44,7 +44,6 @@ end
 
 get '/exp/:experiment/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
-  @scripts = @exp.scripts
 
   haml :experiment
 end
@@ -75,7 +74,6 @@ post '/exp/:experiment/results' do |experiment|
   @result.save
 
   redirect link_to(:result, @exp, @result)
-  #redirect "/exp/#{experiment}/results/#{@result.id}"
 end
 
 get '/exp/:experiment/results/:id' do |experiment, id|
