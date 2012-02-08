@@ -83,6 +83,7 @@ get '/exp/:experiment/results/:id/json' do |experiment, id|
   body @result.canvas_json
 end
 
+<<<<<<< HEAD
 get '/exp/:experiment/compare/:id' do |experiment, id|
   # get the response, display it
   @exp = Experiment.where(:name => experiment).first
@@ -95,3 +96,5 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
   haml :diff
 end
 
+=======
+>>>>>>> 96d4f02a3dd3e66565958da372091fd1caf64cb2
