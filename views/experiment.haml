@@ -1,8 +1,14 @@
 -@exp.scripts.each do |src|
   %script{:type=>"text/javascript", :src=>"#{src}"}
 
+%nav
+  %a{:href=>"/", :rel => "up"} Experiments
+  &gt;
+  %b
+    #{@exp.name}
+
 #experiment
-  %h1 Experiment: #{@exp.name}
+  %h1 Experiment #{@exp.name}
 
   %p
     %a{:href=>"#{link_to(:results, @exp)}"} See Results

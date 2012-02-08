@@ -6,6 +6,16 @@
     document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["pixels"])).replace(/,"/gi, ', "');
   });
 
+%nav
+  %a{:href=>"/", :rel => "up"} Experiments
+  &gt;
+  %a{:href=>"#{link_to(:exp, @exp)}"} #{@exp.name}
+  &gt;
+  %a{:href=>"#{link_to(:results, @exp)}"} Results
+  &gt;
+  %b
+    #{@result.id}
+
 #experiment
   %h1
     Experiment
