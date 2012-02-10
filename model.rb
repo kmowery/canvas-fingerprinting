@@ -10,6 +10,7 @@ ActiveRecord::Base.include_root_in_json = false
 class Experiment < ActiveRecord::Base
   has_many :canvas
 
+  serialize :canvas_size, Hash
   serialize :scripts, Array
 end
 
@@ -31,6 +32,7 @@ class Create < ActiveRecord::Migration
     create_table :experiments do |t|
       t.string :name
       t.string :scripts
+      t.string :canvas_size
     end
 
     create_table :canvas do |t|
