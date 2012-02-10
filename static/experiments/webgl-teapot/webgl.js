@@ -78,7 +78,9 @@ $(document).ready(function() {
   $("#scratch").height(250);
 
   gl = WebGLDebugUtils.makeDebugContext(
-    document.getElementById("scratch").getContext("experimental-webgl"));
+    document.getElementById("scratch").getContext("experimental-webgl",
+      {preserveDrawingBuffer: true})
+      );
 
   if(!gl) {
     alert("No webgl");
@@ -113,5 +115,26 @@ $(document).ready(function() {
   mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
   drawSolid(pMatrix, b, [0,0,-5], [Math.PI/4, Math.PI/4, Math.PI/4]);
+
+
+  var buf = new Uint8Array(250*250*4);
+  gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+
+  //var platformImageData = gl.getImageData(0,0,140,15);
+  var nonzero = {};
+  for(var i in buf) {
+    if(buf[i] !== 0) {
+      nonzero[i] = buf[i];
+    }
+  }
+  var represent = JSON.stringify(nonzero).replace(/,\"/gi, ', \"');
+
+  var pixels = document.getElementById("pixels");
+  pixels.innerHTML = represent;
+
+  //var fi = $('#forminput');
+  //fi.val(JSON.stringify(nonzero).replace(/,\"/gi, ', \"'));
+  var fi = document.getElementById("forminput");
+  fi.value = represent.slice(0, 10);
 });
 

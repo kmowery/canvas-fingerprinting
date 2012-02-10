@@ -1,3 +1,5 @@
+%script{:type=>"text/javascript", :src=>"/experiments/fillForm.js"}
+
 -@exp.scripts.each do |src|
   %script{:type=>"text/javascript", :src=>"#{src}"}
 
@@ -19,7 +21,7 @@
     %p
       Title:
       %input#title{:name=>"title", :type=>"text"}
-    %input#forminput{:name=>"pixels", :type=>"text"}
+    %input#forminput{:name=>"pixels", :type=>"hidden"}
     %input{:type=>"submit", :value=>"Submit"}
 
   %p Pixels
