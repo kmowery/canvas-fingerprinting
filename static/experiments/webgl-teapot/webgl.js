@@ -120,21 +120,6 @@ $(document).ready(function() {
   var buf = new Uint8Array(250*250*4);
   gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
-  //var platformImageData = gl.getImageData(0,0,140,15);
-  var nonzero = {};
-  for(var i in buf) {
-    if(buf[i] !== 0) {
-      nonzero[i] = buf[i];
-    }
-  }
-  var represent = JSON.stringify(nonzero).replace(/,\"/gi, ', \"');
-
-  var pixels = document.getElementById("pixels");
-  pixels.innerHTML = represent;
-
-  //var fi = $('#forminput');
-  //fi.val(JSON.stringify(nonzero).replace(/,\"/gi, ', \"'));
-  var fi = document.getElementById("forminput");
-  fi.value = represent.slice(0, 10);
+  fillForm(buf);
 });
 
