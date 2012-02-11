@@ -6,7 +6,7 @@ function render(elementid, pixels) {
 function renderdiff(elementid, pixels1, pixels2) {
   var canvas = document.getElementById(elementid);
   var context = canvas.getContext("2d");
-  var imageData = context.getImageData(0,0, 140, 15);
+  var imageData = context.getImageData(0,0, canvas.width, canvas.height);
 
   for(var p in pixels1) {
     imageData.data[p] = pixels1[p];
