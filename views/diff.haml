@@ -22,7 +22,7 @@
       var ua = document.createElement("a");
 
       ua.href = "/exp/#{@exp.name}/results/" + multipixels[id]["id"];
-      ua.innerHTML = multipixels[id]["useragent"];
+      ua.innerHTML = multipixels[id]["title"] + ": " + multipixels[id]["useragent"];
 
       var c = document.createElement("canvas");
       c.setAttribute('width', canvas.width);

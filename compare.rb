@@ -59,10 +59,10 @@ end
 post '/exp/:experiment/results' do |experiment|
   @exp = Experiment.where(:name => experiment).first
 
-  # Policy: we store one sample per user-agent.
-  # When and if we discover a collision here, we'll revisit.
+  # Policy: we store one sample per user-agent and title combination.
   @result = Canvas.where(:useragent => env["HTTP_USER_AGENT"],
-                         :experiment_id => @exp.id).first
+                         :experiment_id => @exp.id,
+                         :title => params["title"]).first
 
   puts "Creating new canvas" if @result.nil?
   @result = Canvas.create() if @result.nil?
