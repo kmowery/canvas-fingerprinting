@@ -18,7 +18,10 @@
       idgen += 1;
 
       var p = document.createElement("p");
-      var ua = document.createElement("div");
+      var p2 = document.createElement("p");
+      var ua = document.createElement("a");
+
+      ua.href = "/exp/#{@exp.name}/results/" + multipixels[id]["id"];
       ua.innerHTML = multipixels[id]["useragent"];
 
       var c = document.createElement("canvas");
@@ -26,12 +29,20 @@
       c.setAttribute('height', canvas.height);
       c.setAttribute('id', idgen);
 
-      p.appendChild(ua);
+      var cdiff = document.createElement("canvas");
+      cdiff.setAttribute('width', canvas.width);
+      cdiff.setAttribute('height', canvas.height);
+      cdiff.setAttribute('id', idgen + "diff");
+
+      p2.appendChild(ua);
+      p.appendChild(p2);
       p.appendChild(c);
+      p.appendChild(cdiff);
       attachment_point.appendChild(p);
 
       var pixels = JSON.parse(multipixels[id]["pixels"]);
       renderdiff(idgen, prime_pixels, pixels);
+      renderdiffmap(idgen + "diff", prime_pixels, pixels);
     }
   });
 
