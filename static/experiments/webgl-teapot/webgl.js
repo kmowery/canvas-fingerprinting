@@ -42,69 +42,39 @@ function setupShaders() {
     alert("Error during program validation:\n" + gl.getProgramInfoLog(shaderProgram));return;
   }
 
+  shaderProgram.vertexPosition = gl.getAttribLocation(shaderProgram,
+                                                      "aVertexPosition");
+  gl.enableVertexAttribArray(shaderProgram.vertexPosition);
+
+  //shaderProgram.textureCoord = gl.getAttribLocation(shaderProgram,
+  //                                                  "aTextureCoord");
+  //gl.enableVertexAttribArray(shaderProgram.textureCoord);
+
+  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram,
+                                                       "uPMatrix");
+  shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram,
+                                                        "uMVMatrix");
+  //shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram,
+  //                                                     "uSampler");
+
   gl.useProgram(shaderProgram);
 }
 
-function drawSolid(perspectiveM, buffer, position, rotate) {
-  var mv = mat4.create();
-  mat4.identity(mv);
+var mvMatrix = mat4.create();
+var mvMatrixStack = [];
 
-  if(position !== null) {
-    mat4.translate(mv, position);
-  }
-  if(rotate !== null) {
-    mat4.rotateX(mv, rotate[0], mv);
-    mat4.rotateY(mv, rotate[1], mv);
-    mat4.rotateZ(mv, rotate[2], mv);
-  }
+function pushMVMatrix() {
+  var copy = mat4.create();
+  mat4.set(mvMatrix, copy);
+  mvMatrixStack.push(copy);
+}
 
-  var vertexPosition = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-  gl.enableVertexAttribArray(vertexPosition);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.vertexAttribPointer(vertexPosition,
-      3, // size of vertices
-      gl.FLOAT, false, 0, 0);
-
-  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uPMatrix"), false, perspectiveM);
-  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMVMatrix"), false, mv);
-
-  gl.drawArrays(gl.TRIANGLES, 0, buffer.length);
+function popMVMatrix() {
+  mvMatrix = mvMatrixStack.pop();
 }
 
 
-$(document).ready(function() {
-  $("#scratch").width(250);
-  $("#scratch").height(250);
-
-  gl = WebGLDebugUtils.makeDebugContext(
-    document.getElementById("scratch").getContext("experimental-webgl",
-      {preserveDrawingBuffer: true})
-      );
-
-  if(!gl) {
-    alert("No webgl");
-    return;
-  }
-
-
-  gl.viewportWidth = 250;
-  gl.viewportHeight = 250;
-
-
-  setupShaders();
-
-  var b = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, b);
-  var vertices = [
-    0.0,  1.0,  0.0,
-    -1.0, -1.0,  0.0,
-    1.0, -1.0,  0.0
-      ];
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-  b.length = vertices.length/3;
-
-
+function draw(objects) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
@@ -112,9 +82,50 @@ $(document).ready(function() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   var pMatrix = mat4.create();
-  mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+  mat4.perspective(45, gl.viewportWidth / gl.viewportHeight,
+                   0.1, 100.0, pMatrix);
 
-  drawSolid(pMatrix, b, [0,0,-5], [Math.PI/4, Math.PI/4, Math.PI/4]);
+  mat4.identity(mvMatrix);
+
+  for(var obj in objects) {
+    objects[obj].draw(pMatrix);
+  }
+}
+
+
+$(document).ready(function() {
+  $("#scratch").width(250);
+  $("#scratch").height(250);
+
+  gl = document.getElementById("scratch").getContext("experimental-webgl",
+          {preserveDrawingBuffer: true})
+
+  gl = WebGLDebugUtils.makeDebugContext(gl);
+
+  if(!gl) {
+    alert("No webgl");
+    return;
+  }
+
+  gl.viewportWidth = 250;
+  gl.viewportHeight = 250;
+
+  setupShaders();
+
+  var obj = new VisibleObject( [
+    0.0,  1.0,  0.0,
+    -1.0, -1.0,  0.0,
+    1.0, -1.0,  0.0],
+
+    [0,1,2],
+
+    null,
+
+    [0,0,-5],
+    [Math.PI/4, Math.PI/4, Math.PI/4]
+    );
+
+  draw( [obj] );
 
 
   var buf = new Uint8Array(250*250*4);

@@ -11,10 +11,11 @@ webgl_teapot = Experiment.find_or_create_by_name('webgl-teapot')
 webgl_teapot.name = "webgl-teapot"
 webgl_teapot.canvas_size = {:width => 250, :height => 250}
 webgl_teapot.scripts = [
-  "/experiments/webgl-teapot/webgl.js",
-  "/experiments/webgl-teapot/shaders.js",
   "/gl-matrix-min-1.2.3.js",
   "/webgl-debug.js",
+  "/experiments/webgl-teapot/webgl.js",
+  "/experiments/webgl-teapot/shaders.js",
+  "/experiments/webgl-teapot/objects.js",
 ]
 webgl_teapot.save
 
