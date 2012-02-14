@@ -1,0 +1,2 @@
+ISO 12233 chart from:
+  http://www.graphics.cornell.edu/~westin/misc/res-chart.html

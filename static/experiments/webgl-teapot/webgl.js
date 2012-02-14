@@ -3,6 +3,8 @@
 var gl;
 var shaderProgram;
 
+var objects;
+
 function setupShaders() {
   shaderProgram = gl.createProgram();
 
@@ -42,20 +44,16 @@ function setupShaders() {
     alert("Error during program validation:\n" + gl.getProgramInfoLog(shaderProgram));return;
   }
 
-  shaderProgram.vertexPosition = gl.getAttribLocation(shaderProgram,
-                                                      "aVertexPosition");
+  shaderProgram.vertexPosition = gl.getAttribLocation(shaderProgram, "aVertexPosition");
   gl.enableVertexAttribArray(shaderProgram.vertexPosition);
 
-  //shaderProgram.textureCoord = gl.getAttribLocation(shaderProgram,
-  //                                                  "aTextureCoord");
-  //gl.enableVertexAttribArray(shaderProgram.textureCoord);
+  shaderProgram.textureCoord = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+  gl.enableVertexAttribArray(shaderProgram.textureCoord);
 
-  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram,
-                                                       "uPMatrix");
-  shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram,
-                                                        "uMVMatrix");
-  //shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram,
-  //                                                     "uSampler");
+  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+  shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+  shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+  //shaderProgram.useTextureUniform = gl.getUniformLocation(shaderProgram, "uUseTexture");
 
   gl.useProgram(shaderProgram);
 }
@@ -74,7 +72,7 @@ function popMVMatrix() {
 }
 
 
-function draw(objects) {
+function draw() {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
@@ -87,9 +85,22 @@ function draw(objects) {
 
   mat4.identity(mvMatrix);
 
+
+  gl.validateProgram(shaderProgram);
+  if (!gl.getProgramParameter(shaderProgram, gl.VALIDATE_STATUS))
+  {
+    alert("totally invalid: " + gl.getProgramInfoLog(shaderProgram));return;
+  }
+
+
   for(var obj in objects) {
     objects[obj].draw(pMatrix);
   }
+
+  var buf = new Uint8Array(250*250*4);
+  gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+
+  fillForm(buf);
 }
 
 
@@ -100,37 +111,35 @@ $(document).ready(function() {
   gl = document.getElementById("scratch").getContext("experimental-webgl",
           {preserveDrawingBuffer: true})
 
-  gl = WebGLDebugUtils.makeDebugContext(gl);
-
   if(!gl) {
     alert("No webgl");
     return;
   }
+
+  gl = WebGLDebugUtils.makeDebugContext(gl);
 
   gl.viewportWidth = 250;
   gl.viewportHeight = 250;
 
   setupShaders();
 
-  var obj = new VisibleObject( [
+  objects = [new VisibleObject( [
     0.0,  1.0,  0.0,
     -1.0, -1.0,  0.0,
     1.0, -1.0,  0.0],
 
     [0,1,2],
 
-    null,
+    //null,
+    new Texture( "/images/ISO_12233-reschart-square-small.png",
+      [0.0, 0.0,
+      1.0, 0.0,
+      0.0, 1.0]),
 
     [0,0,-5],
     [Math.PI/4, Math.PI/4, Math.PI/4]
-    );
+    )];
 
-  draw( [obj] );
-
-
-  var buf = new Uint8Array(250*250*4);
-  gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-
-  fillForm(buf);
+  draw();
 });
 
