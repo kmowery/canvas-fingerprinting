@@ -18,6 +18,6 @@
     %li
       %a{:href=>"#{link_to(:diff, @exp, result)}"} (diff)
       %a{:href=>"#{link_to(:result, @exp, result)}"}
-        = result.useragent
+        = result.title + ": " + result.useragent
 
 

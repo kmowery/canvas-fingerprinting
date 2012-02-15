@@ -7,6 +7,8 @@ require 'haml'
 require 'model.rb'
 require 'experiments.rb'
 
+# gem install activerecord sinatra sinatra-contrib json sqlite3 thin
+
 set :public_folder, File.dirname(__FILE__) + '/static'
 enable :sessions
 
