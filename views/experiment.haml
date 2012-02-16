@@ -12,7 +12,7 @@
 #experiment
   %h1 Experiment #{@exp.name}
 
-  %p
+  %p#info
     %a{:href=>"#{link_to(:results, @exp)}"} See Results
 
   = render :haml, :canvas, :layout => false

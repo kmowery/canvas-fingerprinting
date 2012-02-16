@@ -116,7 +116,7 @@ $(document).ready(function() {
     return;
   }
 
-  gl = WebGLDebugUtils.makeDebugContext(gl);
+  //gl = WebGLDebugUtils.makeDebugContext(gl);
 
   gl.viewportWidth = 250;
   gl.viewportHeight = 250;
@@ -141,5 +141,13 @@ $(document).ready(function() {
     )];
 
   draw();
+
+  var renderer = gl.getParameter(gl.RENDERER);
+  var vendor = gl.getParameter(gl.VENDOR);
+  var version = gl.getParameter(gl.VERSION);
+
+  var x = document.createElement("p");
+  x.innerHTML = "Renderer:" + renderer + " vendor: " + vendor + " version: " + version;
+  document.getElementById("info").appendChild(x);
 });
 
