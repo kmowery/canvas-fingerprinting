@@ -6,6 +6,14 @@
     document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["pixels"])).replace(/,"/gi, ', "');
   });
 
+  function sendDelete() {
+    var x = $.ajax( "#{ link_to(:result, @exp, @result) }", {
+      "type": "DELETE",
+      "success": function() { document.location = "#{ link_to(:results, @exp)}"; }
+    });
+
+  }
+
 %nav
   %a{:href=>"/", :rel => "up"} Experiments
   &gt;
@@ -25,6 +33,9 @@
     %h3 Title: #{@result.title}
 
   %h3 User Agent: #{@result.useragent}
+
+  %p
+    %a{:href=>"javascript:sendDelete()"} (delete)
 
   %p
     %a{:href=>"#{link_to(:diff, @exp, @result)}"} (diff)

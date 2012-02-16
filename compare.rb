@@ -86,7 +86,18 @@ get '/exp/:experiment/results/:id' do |experiment, id|
   # When and if we discover a collision here, we'll revisit.
   @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
 
+  redirect link_to(:results, @exp) and return if @result.nil?
+
   haml :result
+end
+
+delete '/exp/:experiment/results/:id' do |experiment, id|
+  # get the response, display it
+  @exp = Experiment.where(:name => experiment).first
+  Canvas.delete_all(:id => id, :experiment_id => @exp.id)
+
+  puts "OMG A DELETE"
+  [200, "Yeah okay"]
 end
 
 get '/exp/:experiment/results/:id/json' do |experiment, id|
@@ -102,6 +113,8 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
   # Policy: we store one sample per user-agent.
   # When and if we discover a collision here, we'll revisit.
   @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
+  redirect link_to(:results, @exp) and return if @result.nil?
+
   @results = Canvas.where(:experiment_id => @exp.id)
 
   haml :diff
