@@ -2,7 +2,8 @@
 :javascript
   $(document).ready(function() {
     var prime = #{ @result.to_json };
-    var prime_pixels = JSON.parse( prime["pixels"] )
+    //var prime_pixels = JSON.parse( prime["pixels"] )
+    var prime_png64 = prime["png"];
     var multipixels = [
       #{
         @results.map {|result|
@@ -24,25 +25,29 @@
       ua.href = "/exp/#{@exp.name}/results/" + multipixels[id]["id"];
       ua.innerHTML = multipixels[id]["title"] + ": " + multipixels[id]["useragent"];
 
-      var c = document.createElement("canvas");
-      c.setAttribute('width', canvas.width);
-      c.setAttribute('height', canvas.height);
-      c.setAttribute('id', idgen);
+      //var c = document.createElement("canvas");
+      //c.setAttribute('width', canvas.width);
+      //c.setAttribute('height', canvas.height);
+      //c.setAttribute('id', idgen);
 
-      var cdiff = document.createElement("canvas");
-      cdiff.setAttribute('width', canvas.width);
-      cdiff.setAttribute('height', canvas.height);
-      cdiff.setAttribute('id', idgen + "diff");
+      //var cdiff = document.createElement("canvas");
+      //cdiff.setAttribute('width', canvas.width);
+      //cdiff.setAttribute('height', canvas.height);
+      //cdiff.setAttribute('id', idgen + "diff");
 
       p2.appendChild(ua);
       p.appendChild(p2);
-      p.appendChild(c);
-      p.appendChild(cdiff);
+
+      diffPNG(p, prime_png64, multipixels[id]["png"]);
+      diffmapPNG(p, prime_png64, multipixels[id]["png"]);
+
+      //p.appendChild(c);
+      //p.appendChild(cdiff);
       attachment_point.appendChild(p);
 
-      var pixels = JSON.parse(multipixels[id]["pixels"]);
-      renderdiff(idgen, prime_pixels, pixels);
-      renderdiffmap(idgen + "diff", prime_pixels, pixels);
+      //var pixels = JSON.parse(multipixels[id]["pixels"]);
+      //renderdiff(idgen, prime_pixels, pixels);
+      //renderdiffmap(idgen + "diff", prime_pixels, pixels);
     }
   });
 

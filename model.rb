@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby -w -rubygems
 
+require 'rubygems'
 require 'active_record'
 require 'json'
 
@@ -22,11 +23,15 @@ class Canvas < ActiveRecord::Base
       'id' => id,
       'useragent' => useragent,
       'title' => title,
-      'pixels' => pixels
+      'pixels' => pixels,
+      'png' => png
     }.to_json(*a)
   end
 end
 
+# Two choices for storing image data:
+#   put JSON, extracted from a canvas data array, into pixels
+#   put a Base64 encoded png, pulled from a canvas, into png
 class Create < ActiveRecord::Migration
   def up
     create_table :experiments do |t|
@@ -54,6 +59,15 @@ class Create < ActiveRecord::Migration
     rescue
       puts "table 'canvas' doesn't exist"
     end
+  end
+end
+
+class AddPNG < ActiveRecord::Migration
+  def up
+    add_column :canvas, :png, :string
+  end
+  def down
+    remove_column :canvas, :png, :string
   end
 end
 

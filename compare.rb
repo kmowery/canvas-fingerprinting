@@ -73,6 +73,7 @@ post '/exp/:experiment/results' do |experiment|
   @result.useragent = env["HTTP_USER_AGENT"]
   @result.title = params["title"]
   @result.pixels = params["pixels"]
+  @result.png = params["png"]
   @result.save
 
   redirect link_to(:result, @exp, @result)

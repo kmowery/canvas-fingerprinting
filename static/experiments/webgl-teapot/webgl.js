@@ -104,10 +104,12 @@ function draw() {
     objects[obj].draw(pMatrix);
   }
 
-  var buf = new Uint8Array(250*250*4);
-  gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  // How to read pixels:
+  //var buf = new Uint8Array(250*250*4);
+  //gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  //fillForm(buf);
 
-  fillForm(buf);
+  fillForm(document.getElementById("scratch"));
 }
 
 

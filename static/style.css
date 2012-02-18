@@ -4,3 +4,7 @@ canvas {
   border: 1px dotted;
 }
 
+div {
+  word-wrap: break-word;
+}
+

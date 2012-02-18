@@ -2,8 +2,15 @@
 :javascript
   $(document).ready(function() {
     var prevent_xss = #{ @result.to_json };
-    render("scratch", JSON.parse(prevent_xss["pixels"]));
-    document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["pixels"])).replace(/,"/gi, ', "');
+
+    if(prevent_xss["png"] !== null) {
+      renderPNG("attachment", prevent_xss["png"]);
+      document.getElementById("pixels").innerHTML = prevent_xss["png"];
+    } else {
+      // fallback to trying to render pixels
+      render("scratch", JSON.parse(prevent_xss["pixels"]));
+      document.getElementById("pixels").innerHTML = JSON.stringify(JSON.parse(prevent_xss["pixels"])).replace(/,"/gi, ', "');
+    }
   });
 
   function sendDelete() {
@@ -40,7 +47,7 @@
   %p
     %a{:href=>"#{link_to(:diff, @exp, @result)}"} (diff)
 
-  = render :haml, :canvas, :layout => false
+  #attachment
 
   %p Pixels:
   #pixels

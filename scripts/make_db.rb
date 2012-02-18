@@ -3,6 +3,8 @@
 require 'model.rb'
 
 c = Create.new
-c.down
 c.up
+
+a = AddPNG.new
+a.up
 
