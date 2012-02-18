@@ -1,21 +1,61 @@
 %script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
+%script{:type=>"text/javascript", :src=>"/barrier.js"}
 :javascript
-  $(document).ready(function() {
-    var prime = #{ @result.to_json };
-    //var prime_pixels = JSON.parse( prime["pixels"] )
-    var prime_png64 = prime["png"];
-    var multipixels = [
-      #{
-        @results.map {|result|
-          result.to_json
-        }.join(',\n')
-      }
-    ];
-    var canvas = document.getElementById("scratch");
+  var b = new Barrier(doDiffs);
+
+  // takes a image tag and returns a canvas, properly sized, with the image
+  // inside it
+  function imgToCanvas(img) {
+    var c = document.createElement("canvas");
+    c.width = img.width;
+    c.height = img.height;
+    var ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    var imageData = ctx.getImageData(0,0, c.width, c.height);
+    return {"canvas": c, "context": ctx, "imageData": imageData};
+  }
+
+  // too specialized. Shouldn't take obj here.
+  function makeImageCallback(obj, barrier, tag) {
+    return function() {
+      obj.canvas = imgToCanvas(obj.image);
+      barrier.notify(tag);
+    };
+  };
+
+  var prime = #{ @result.to_json };
+  prime.image = new Image();
+  prime.image.src = prime["png"];
+  prime.image.tag = b.register();
+  prime.image.onload = makeImageCallback(prime, b, prime.image.tag);
+
+  var multipixels = [
+    #{
+      @results.map {|result|
+        result.to_json
+      }.join(',\n')
+    }
+  ];
+  for(var i = 0; i < multipixels.length; i++) {
+    // If there's no png, don't parse it
+    if(multipixels[i]["png"] == null) {
+      continue;
+    }
+
+    multipixels[i].image = new Image();
+    multipixels[i].image.src = multipixels[i]["png"];
+    multipixels[i].image.tag = b.register();
+    multipixels[i].image.onload = makeImageCallback(multipixels[i], b, multipixels[i].image.tag);
+  }
+
+  function doDiffs() {
     var attachment_point = document.getElementById("diffs");
     var idgen = 0;
 
     for(var id in multipixels) {
+      if(multipixels[id].canvas == null) {
+        continue;
+      }
       idgen += 1;
 
       var p = document.createElement("p");
@@ -25,31 +65,17 @@
       ua.href = "/exp/#{@exp.name}/results/" + multipixels[id]["id"];
       ua.innerHTML = multipixels[id]["title"] + ": " + multipixels[id]["useragent"];
 
-      //var c = document.createElement("canvas");
-      //c.setAttribute('width', canvas.width);
-      //c.setAttribute('height', canvas.height);
-      //c.setAttribute('id', idgen);
-
-      //var cdiff = document.createElement("canvas");
-      //cdiff.setAttribute('width', canvas.width);
-      //cdiff.setAttribute('height', canvas.height);
-      //cdiff.setAttribute('id', idgen + "diff");
-
       p2.appendChild(ua);
       p.appendChild(p2);
 
-      diffPNG(p, prime_png64, multipixels[id]["png"]);
-      diffmapPNG(p, prime_png64, multipixels[id]["png"]);
+      var diffs = diff(prime.canvas, multipixels[id].canvas);
+      p.appendChild(diffs);
+      p.appendChild(diffmap(prime.canvas, multipixels[id].canvas));
 
-      //p.appendChild(c);
-      //p.appendChild(cdiff);
       attachment_point.appendChild(p);
-
-      //var pixels = JSON.parse(multipixels[id]["pixels"]);
-      //renderdiff(idgen, prime_pixels, pixels);
-      //renderdiffmap(idgen + "diff", prime_pixels, pixels);
     }
-  });
+  }
+
 
 %nav
   %a{:href=>"/", :rel => "up"} Experiments
