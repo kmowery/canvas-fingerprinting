@@ -1,6 +1,15 @@
 #!/usr/bin/env ruby -w -rubygems
 require 'model.rb'
 
+require 'find'
+
+# Includes any ruby files under ./static .
+# Use these to define experiments.
+Find.find("./static") do |path|
+  require path if path =~ /.*\.rb/
+end
+
+
 dev = Experiment.find_or_create_by_name('dev')
 dev.name = "dev"
 dev.canvas_size = {:width => 150, :height => 15}
