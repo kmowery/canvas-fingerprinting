@@ -62,3 +62,19 @@ function diffmap(c1, c2) {
   return canvas;
 }
 
+
+function canvasDiffer(c1, c2) {
+  if(c1 == null || c2 == null) {
+    return true;
+  }
+
+  for(var i = 0; i < c1.imageData.data.length; i = i + 1) {
+    var one = c1.imageData.data[i];
+    var two = c2.imageData.data[i];
+    if(one !== two) {
+      return true;
+    }
+  }
+  return false;
+}
+

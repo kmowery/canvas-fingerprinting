@@ -68,6 +68,12 @@
       p2.appendChild(ua);
       p.appendChild(p2);
 
+      if(canvasDiffer(prime.canvas, multipixels[id].canvas)) {
+        var differ = document.createElement("div");
+        differ.innerHTML = "Differ!";
+        p.appendChild(differ);
+      }
+
       var diffs = diff(prime.canvas, multipixels[id].canvas);
       p.appendChild(diffs);
       p.appendChild(diffmap(prime.canvas, multipixels[id].canvas));
