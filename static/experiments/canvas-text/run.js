@@ -13,7 +13,8 @@ function draw() {
   context.fillRect(1,0, 2, 2);
 
   //context.font = "bold 12px sans-serif";
-  context.font = "'Lusitana', serif;"
+  //context.font = "'Lusitana', serif;"
+  context.font = "notevenafont;"
   context.textBaseline = "top";
   context.fillText("The lazy brown fox &c.",11, 1);
 

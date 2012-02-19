@@ -13,6 +13,7 @@ class Experiment < ActiveRecord::Base
 
   serialize :canvas_size, Hash
   serialize :scripts, Array
+  serialize :links, Array
 end
 
 class Canvas < ActiveRecord::Base
@@ -68,6 +69,15 @@ class AddPNG < ActiveRecord::Migration
   end
   def down
     remove_column :canvas, :png, :string
+  end
+end
+
+class AddLinks < ActiveRecord::Migration
+  def up
+    add_column :experiments, :links, :string
+  end
+  def down
+    remove column :experiments, :links, :string
   end
 end
 

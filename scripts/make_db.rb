@@ -8,3 +8,6 @@ c.up
 a = AddPNG.new
 a.up
 
+links = AddList.new
+links.up
+
