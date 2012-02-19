@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -w -rubygems
+#!/usr/bin/env ruby
 
 require 'model.rb'
 
@@ -8,6 +8,6 @@ c.up
 a = AddPNG.new
 a.up
 
-links = AddList.new
+links = AddLinks.new
 links.up
 
