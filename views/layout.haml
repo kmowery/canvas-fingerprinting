@@ -2,15 +2,21 @@
 %html{:lang=>"en"}
   %head
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
     <link rel="stylesheet" type="text/css" href="/style.css">
+    %script{:type=>"text/javascript", :src=>"/jquery-1.7.1.js"}
 
     - if @exp
       -@exp.links.each do |link|
         %link{link}
 
+    - if @scripts
+      -@scripts.each do |script|
+        - if script.class == String
+          %script{:type=>"text/javascript", :src=>"#{script}"}
+        - else
+          %script{script.except(:content)} #{script[:content]}
 
-    %script{:type=>"text/javascript", :src=>"/jquery-1.7.1.js"}
+
     %title Experiment Away
   %body
     = yield

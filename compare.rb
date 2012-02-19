@@ -3,11 +3,12 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'haml'
+require 'facets/hash/except'
 
 require 'model.rb'
 require 'experiments.rb'
 
-# gem install activerecord sinatra sinatra-contrib json sqlite3 thin haml
+# gem install activerecord sinatra sinatra-contrib json sqlite3 thin haml facets
 
 set :public_folder, File.dirname(__FILE__) + '/static'
 enable :sessions
@@ -46,6 +47,9 @@ end
 
 get '/exp/:experiment/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
+
+  # We're performing the experiment. Link in the appropriate scripts.
+  @scripts = @exp.scripts
 
   haml :experiment
 end
