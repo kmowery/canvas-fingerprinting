@@ -1,4 +1,17 @@
 
+// Make a test harness for running experiments
+var experiments = {}
+function registerExperiment(name, f) {
+  experiments[name] = f;
+}
+
+function runExperiment(name, canvasid) {
+  if(name in experiments) {
+    experiments[name](name, canvasid);
+  }
+}
+
+
 // data should be an array with pixel data in it
 function fillForm(experiment, canvas) {
   var base64png = canvas.toDataURL("image/png");

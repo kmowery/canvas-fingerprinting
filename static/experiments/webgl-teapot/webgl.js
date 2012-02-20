@@ -253,8 +253,8 @@ WebGLTeapot.prototype.run = function () {
 }
 
 
-function runExperiment(name, canvasid) {
+registerExperiment("webgl-teapot", function(name, canvasid) {
   exp = new WebGLTeapot(name, canvasid);
   exp.run();
-}
+});
 

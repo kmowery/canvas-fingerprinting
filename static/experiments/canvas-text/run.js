@@ -17,7 +17,7 @@ function draw(canvas) {
   context.fillText("The lazy brown fox &c.",11, 1);
 }
 
-function runExperiment(name, canvasid) {
+registerExperiment("dev", function(name, canvasid) {
   if(!supportsCanvas()) {
     //alert("No canvas support");
     return false;
@@ -34,5 +34,6 @@ function runExperiment(name, canvasid) {
   draw(canvas);
 
   fillForm(name, canvas);
-}
+});
+
 
