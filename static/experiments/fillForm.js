@@ -17,7 +17,9 @@ function fillForm(experiment, canvas) {
   var base64png = canvas.toDataURL("image/png");
 
   var pixels = document.getElementById("pixels");
-  pixels.innerHTML = base64png;
+  if(pixels !== null) {
+    pixels.innerHTML = base64png;
+  }
 
   var form = document.getElementById("exp-"+experiment);
   if(form === null) {

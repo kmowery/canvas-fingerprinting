@@ -138,7 +138,9 @@ get '/mt' do
 end
 
 post '/mt' do
-  puts params
+  params.each do |p|
+    puts p
+  end
   redirect '/mt'
 end
 
