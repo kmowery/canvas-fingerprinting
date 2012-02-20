@@ -1,7 +1,91 @@
 
 
 :javascript
+  function supportsCanvas() {
+    return !!document.createElement('canvas').getContext;
+  }
+  function supportsCanvasText() {
+    var c = document.createElement('canvas');
+    return c.getContext && typeof c.getContext('2d').fillText == 'function';
+  }
+  function supportsWebGL() {
+    var contextNames = ["webgl","experimental-webgl","moz-webgl","webkit-3d"];
+    var canvas = document.createElement('canvas');
+    for(var i = 0; i < contextNames.length; i++){
+      try{
+        gl = canvas.getContext(contextNames[i]);
+        if(gl){
+          return true;
+        }
+      }catch(e){
+        return false;
+      }
+    }
+    return false;
+  }
+
+
+
+  function getBrowser() {
+    var ua = navigator.userAgent;
+
+    if(ua.match(/Chrome/)) {
+      return ["chrome", null]
+    }
+    if(ua.match(/Firefox/)) {
+      return ["firefox", null];
+    }
+    if(ua.match(/Safari/)) {
+      return ["safari", null];
+    }
+    if(ua.match(/Opera/)) {
+      return ["opera", null];
+    }
+    if(ua.match(/MSIE/)) {
+      return ["ie", null];
+    }
+    return [null, 1.0];
+  }
+
+  function getOS() {
+    var ua = navigator.userAgent;
+
+    if(ua.match(/Windows/)) {
+      return ["windows"];
+    }
+    if(ua.match("Mac OS X")) {
+      return ["osx"];
+    }
+    if(ua.match(/Linux/)) {
+      return ["linux"];
+    }
+    return [null];
+  }
+
+  function showPlatformInstructions() {
+    var browser = getBrowser();
+    var os = getOS();
+
+    if(browser[0] === null || os[0] === null) {
+      // Give up. something went horribly wrong.
+      $("#nowebgl").show();
+    } else if(!supportsWebGL()) {
+      $("#nowebgl").show();
+    } else {
+      // Show the instructions
+      var id = "#" + browser[0];
+      $(id).show();
+
+      if(os[0] == "osx") {
+        $(".specialkey").html("&#8984;");
+      } else {
+        $(".specialkey").html("control");
+      }
+    }
+  }
+
   $(document).ready(function() {
+    showPlatformInstructions();
     #{
       @experiments.map {|exp|
         "runExperiment(\"#{exp.name}\", null);"
@@ -24,19 +108,75 @@
       %em{:style=>"font-size:200%"}
         You must have JavaScript enabled to complete this HIT.
 
-%div#survey
+
+
+#instructions
   %h1 Instructions
-  %ul
-    %li Press some buttons
 
-  - @experiments.each do |e|
-    = e.name
+  #chrome.platform
+    %ol
+      %li Open a new window (Press <span class="specialkey"></span>+N).
+      %li Type "about:gpu" and press enter. TODO: TAKE PICTURE
+      %li Select the entire page (<span class="specialkey"></span>+A) and copy the contents to the clipboard (<span class="specialkey"></span>+C).
+      %li Click in the text area below and paste (<span class="specialkey"></span>+V).
+      %li It should look something like this: TODO: INSERT IMAGE
+      %li Press Submit!
 
+  #firefox.platform
+    %ol
+      %li Open a new window (Press <span class="specialkey"></span>+N).
+      %li Type "about:support" and press enter. TODO: TAKE PICTURE
+      %li Click "Copy all to Clipboard".
+      %li Click in the text area below and paste (<span class="specialkey"></span>+V).
+      %li It should look something like this: TODO: INSERT IMAGE
+      %li Press Submit!
+
+  #safari.platform
+    %ul
+      %li Since you're using Safari, we don't actually need you to do anything! Just hit submit below.
+
+  #opera.platform
+    %p Unfortunately, there's no easy method for getting the information you need to complete this HIT in Opera. If you can find the following information (in a manner we can use) and submit it in the box below, we'll give you an extra 25 &cent; bonus. If we can't use your information, you'll still be paid for participating. Since you're running the latest and greatest Opera, we have faith in you.
+    %ol
+      %li Graphics Card (Example: ATI Radeon HD 6490M)
+      %li Graphics Driver (Example: 7.8.11)
+
+    %p Suggestions:
+    %ul
+      %li On OSX, try looking in the Graphics/Displays and Software&cent;Extensions section of System Information. Note that the graphics driver version cannot be found in Graphics/Displays.
+      %li On Windows 7, try Dsiplay Adapters in Device Manager.
+      %li On Linux, try <tt>lspci</tt> or perhaps <tt>glxinfo</tt> on the command line. Determining which version of fglrx or nvidia you have installed will also be helpful.
+
+  #ie-windows.platform
+    %ol
+      %li Your browser doesn't support WebGL, so we don't collect any extra information here. Just hit submit below.
+
+  #nowebgl.platform
+    Hi! We're conducting this experiment to measure the WebGL capabilities of browsers. Unfortunately, your browser doesn't appear to support WebGL. We'll still pay you, but you won't be eligible for the bonus. If you'd like to update your browser to one with newer features and come back, we'd love it.
+
+    %ul
+      %li
+        Internet Explorer: We suggest installing either 
+        %a{:href=>"http://chrome.google.com/"}Google Chrome
+        or
+        %a{:href=>"http://getfirefox.com/"}Mozilla Firefox
+        and then coming back. Don't worry, we'll wait.
+      %li
+        Safari: follow the instructions
+        %a{:href=>"http://www.khronos.org/webgl/wiki/Implementations/WebKit"}here
+        and then reload the page! No new browser necessary.
+      %li
+        Opera: You'll need to download and install
+        %a{:href=>"http://www.opera.com/browser/next/"} Opera Next
+        and then come back to this HIT.
+    %p
+      For more information, visit
+      %a{:href=>"http://get.webgl.org"}get.webgl.org.
+
+%div#survey
   %h2
     Survey
   %form#submit{:action=>"/mt", :method=>"post"}
-    %p
-      Title:
     %input#userinput{:name=>"input", :type=>"textarea", :rows=>"13", :cols=>"40"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}

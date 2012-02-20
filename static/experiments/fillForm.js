@@ -30,6 +30,21 @@ function fillForm(experiment, canvas) {
   form.value = base64png;
 }
 
+function experimentDied(experiment, reason) {
+  var pixels = document.getElementById("pixels");
+  if(pixels !== null) {
+    pixels.innerHTML = reason;
+  }
+
+  var form = document.getElementById("exp-"+experiment);
+  if(form === null) {
+    // Get the png field from the standard form.
+    form = document.getElementById("png");
+  }
+
+  form.value = reason;
+}
+
 function fillFormById(id) {
   fillForm(document.getElementById(id));
 }

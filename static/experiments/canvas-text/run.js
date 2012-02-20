@@ -19,14 +19,15 @@ function draw(canvas) {
 
 registerExperiment("dev", function(name, canvasid) {
   if(!supportsCanvas()) {
-    //alert("No canvas support");
+    experimentFailed("no canvas support");
     return false;
   }
   if(!supportsCanvasText()) {
+    experimentFailed("no canvas text support");
     return false;
   }
 
-  var canvas = document.getElementById("scratch");
+  var canvas = document.getElementById(canvasid);
   if(canvas === null) {
     canvas = document.createElement("canvas");
   }

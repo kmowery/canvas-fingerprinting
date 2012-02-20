@@ -34,8 +34,8 @@ WebGLTeapot.prototype.setupShaders = function () {
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      alert(gl.getShaderInfoLog(shader));
-      return null;
+      experimentDied(this.name, "Shader did not compile: " + gl.getShaderInfoLog(shader));
+      return false;
     }
 
     gl.attachShader(shaderProgram, shader);
@@ -46,8 +46,8 @@ WebGLTeapot.prototype.setupShaders = function () {
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      alert(gl.getShaderInfoLog(shader));
-      return null;
+      experimentDied(this.name, "Shader did not compile: " + gl.getShaderInfoLog(shader));
+      return false;
     }
 
     gl.attachShader(shaderProgram, shader);
@@ -55,13 +55,15 @@ WebGLTeapot.prototype.setupShaders = function () {
   gl.linkProgram(shaderProgram);
 
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-    alert("Could not initialise shaders");
+    experimentDied(this.name, "could not initialize shaders");
+    return false;
   }
 
   gl.validateProgram(shaderProgram);
   if (!gl.getProgramParameter(shaderProgram, gl.VALIDATE_STATUS))
   {
-    alert("Error during program validation:\n" + gl.getProgramInfoLog(shaderProgram));return;
+    experimentDied("shaders did not validate:\n" + gl.getProgramInfoLog(shaderProgram));
+    return false;
   }
 
   shaderProgram.vertexPosition = gl.getAttribLocation(shaderProgram, "aVertexPosition");
@@ -83,6 +85,7 @@ WebGLTeapot.prototype.setupShaders = function () {
   shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
 
   gl.useProgram(shaderProgram);
+  return true;
 }
 
 WebGLTeapot.prototype.pushMVMatrix = function() {
@@ -115,7 +118,9 @@ WebGLTeapot.prototype.draw = function () {
   gl.validateProgram(shaderProgram);
   if (!gl.getProgramParameter(shaderProgram, gl.VALIDATE_STATUS))
   {
-    alert("totally invalid: " + gl.getProgramInfoLog(shaderProgram));return;
+    experimentDied(this.name, "Shader program did not validate:" +
+                   + gl.getProgramInfoLog(shaderProgram));
+    return;
   }
 
 
@@ -143,7 +148,7 @@ WebGLTeapot.prototype.run = function () {
   //        {preserveDrawingBuffer: true, antialias: false})
 
   if(!this.gl) {
-    alert("No webgl");
+    experimentDied(this.name, "no webgl");
     return;
   }
 
@@ -152,11 +157,13 @@ WebGLTeapot.prototype.run = function () {
   this.gl.viewportWidth = 250;
   this.gl.viewportHeight = 250;
 
-  this.setupShaders();
+  if(!this.setupShaders()) {
+    // shaders failed. bail.
+    return;
+  }
 
   var gl = this.gl;
   var shaderProgram = this.shaderProgram;
-
 
 
   var points = [];

@@ -8,3 +8,7 @@ div {
   word-wrap: break-word;
 }
 
+.platform {
+  display: none;
+}
+
