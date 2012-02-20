@@ -1,5 +1,6 @@
 
-var vertex_shaders = [
+function webgl_teapot_vertex_shaders() {
+  return [
 "attribute vec3 aVertexPosition;" +
 "attribute vec3 aVertexNormal;" +
 "attribute vec2 aTextureCoord;" +
@@ -23,10 +24,11 @@ var vertex_shaders = [
   "float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);" +
   "vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;" +
 "}",
+];
+};
 
-]
-
-var fragment_shaders = [
+function webgl_teapot_fragment_shaders() {
+  return [
 "precision mediump float;" +
 "varying vec2 vTextureCoord;" +
 "varying vec3 vLightWeighting;" +
@@ -38,5 +40,6 @@ var fragment_shaders = [
   "gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);" +
 "}",
 
-]
+];
+};
 

@@ -1,16 +1,36 @@
 
+// We cant' use global variables, since things might break if we include
+// multiplc experiment scripts.
+// Instead, we'll pass around a this object.
 
-var gl;
-var shaderProgram;
 
-var objects;
+// Make a new experiment!
+function WebGLTeapot(name, canvasid) {
+  this.name = name;
+  this.canvasid = canvasid;
 
-function setupShaders() {
-  shaderProgram = gl.createProgram();
+  this.canvas = document.getElementById(canvasid);
+  if(this.canvas === null) {
+    this.canvas = document.createElement("canvas");
+  }
 
-  for(var i in vertex_shaders) {
+
+  this.mvMatrix = mat4.create();
+  this.mvMatrixStack = [];
+
+  this.vertex_shaders = webgl_teapot_vertex_shaders();
+  this.fragment_shaders = webgl_teapot_fragment_shaders();
+
+}
+
+WebGLTeapot.prototype.setupShaders = function () {
+  var gl = this.gl;
+  this.shaderProgram = gl.createProgram();
+  var shaderProgram = this.shaderProgram;
+
+  for(var i in this.vertex_shaders) {
     var shader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(shader, vertex_shaders[i]);
+    gl.shaderSource(shader, this.vertex_shaders[i]);
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -20,9 +40,9 @@ function setupShaders() {
 
     gl.attachShader(shaderProgram, shader);
   }
-  for(var shader in fragment_shaders) {
+  for(var shader in this.fragment_shaders) {
     var shader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(shader, fragment_shaders[i]);
+    gl.shaderSource(shader, this.fragment_shaders[i]);
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -65,21 +85,21 @@ function setupShaders() {
   gl.useProgram(shaderProgram);
 }
 
-var mvMatrix = mat4.create();
-var mvMatrixStack = [];
-
-function pushMVMatrix() {
+WebGLTeapot.prototype.pushMVMatrix = function() {
   var copy = mat4.create();
-  mat4.set(mvMatrix, copy);
-  mvMatrixStack.push(copy);
+  mat4.set(this.mvMatrix, copy);
+  this.mvMatrixStack.push(copy);
 }
 
-function popMVMatrix() {
-  mvMatrix = mvMatrixStack.pop();
+WebGLTeapot.prototype.popMVMatrix = function () {
+  this.mvMatrix = this.mvMatrixStack.pop();
 }
 
 
-function draw() {
+WebGLTeapot.prototype.draw = function () {
+  var gl = this.gl;
+  var shaderProgram = this.shaderProgram;
+
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
@@ -90,8 +110,7 @@ function draw() {
   mat4.perspective(45, gl.viewportWidth / gl.viewportHeight,
                    0.1, 100.0, pMatrix);
 
-  mat4.identity(mvMatrix);
-
+  mat4.identity(this.mvMatrix);
 
   gl.validateProgram(shaderProgram);
   if (!gl.getProgramParameter(shaderProgram, gl.VALIDATE_STATUS))
@@ -100,8 +119,8 @@ function draw() {
   }
 
 
-  for(var obj in objects) {
-    objects[obj].draw(pMatrix);
+  for(var obj in this.objects) {
+    this.objects[obj].draw(pMatrix);
   }
 
   // How to read pixels:
@@ -109,32 +128,35 @@ function draw() {
   //gl.readPixels(0, 0, 250, 250, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   //fillForm(buf);
 
-  fillForm(document.getElementById("scratch"));
+  // Why do this here? because it needs to be re-done after we draw with the
+  // texture
+  fillForm(this.name, this.canvas);
 }
 
+WebGLTeapot.prototype.run = function () {
+  this.canvas.width = 250;
+  this.canvas.height = 250;
 
-$(document).ready(function() {
-  $("#scratch").width(250);
-  $("#scratch").height(250);
-
-  var scratch = document.getElementById("scratch");
-  scratch.width = 250;
-  scratch.height = 250;
-
-  gl = document.getElementById("scratch").getContext("experimental-webgl",
+  this.gl = this.canvas.getContext("experimental-webgl",
           {preserveDrawingBuffer: true, antialias: true})
+  //gl = document.getElementById("canvas").getContext("experimental-webgl",
+  //        {preserveDrawingBuffer: true, antialias: false})
 
-  if(!gl) {
+  if(!this.gl) {
     alert("No webgl");
     return;
   }
 
-  gl = WebGLDebugUtils.makeDebugContext(gl);
+  //gl = WebGLDebugUtils.makeDebugContext(gl);
 
-  gl.viewportWidth = 250;
-  gl.viewportHeight = 250;
+  this.gl.viewportWidth = 250;
+  this.gl.viewportHeight = 250;
 
-  setupShaders();
+  this.setupShaders();
+
+  var gl = this.gl;
+  var shaderProgram = this.shaderProgram;
+
 
 
   var points = [];
@@ -181,11 +203,12 @@ $(document).ready(function() {
     }
   }
 
-  objects = [new VisibleObject(
+  this.objects = [new VisibleObject(
+      this,
       points,
       torender,
 
-    new Texture( "/images/ISO_12233-reschart-512x512.png",
+    new Texture(this, "/images/ISO_12233-reschart-512x512.png",
       textureCoords),
 
     [0,0,-10],
@@ -218,14 +241,20 @@ $(document).ready(function() {
   //  [Math.PI/4, Math.PI/4, Math.PI/4]
   //  )];
 
-  draw();
+  this.draw();
 
-  var renderer = gl.getParameter(gl.RENDERER);
-  var vendor = gl.getParameter(gl.VENDOR);
-  var version = gl.getParameter(gl.VERSION);
+  //var renderer = gl.getParameter(gl.RENDERER);
+  //var vendor = gl.getParameter(gl.VENDOR);
+  //var version = gl.getParameter(gl.VERSION);
 
-  var x = document.createElement("p");
-  x.innerHTML = "Renderer:" + renderer + " vendor: " + vendor + " version: " + version;
-  document.getElementById("info").appendChild(x);
-});
+  //var x = document.createElement("p");
+  //x.innerHTML = "Renderer:" + renderer + " vendor: " + vendor + " version: " + version;
+  //document.getElementById("info").appendChild(x);
+}
+
+
+function runExperiment(name, canvasid) {
+  exp = new WebGLTeapot(name, canvasid);
+  exp.run();
+}
 

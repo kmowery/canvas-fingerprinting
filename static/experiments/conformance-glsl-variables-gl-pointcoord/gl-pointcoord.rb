@@ -90,5 +90,6 @@ END
     },
 
 ]
+gl_pointcoord.mt = false
 gl_pointcoord.save
 

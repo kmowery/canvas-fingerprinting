@@ -125,3 +125,20 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
   haml :diff
 end
 
+
+get '/mt' do
+  @experiments = Experiment.where(:mt => true)
+
+  @scripts = @experiments.reduce([]) do |array, exp|
+    array | exp.scripts
+  end
+
+
+  haml :mt
+end
+
+post '/mt' do
+  puts params
+  redirect '/mt'
+end
+

@@ -7,28 +7,32 @@ function supportsCanvasText() {
   return c.getContext && typeof c.getContext('2d').fillText == 'function';
 }
 
-function draw() {
-  var canvas = document.getElementById("scratch");
+function draw(canvas) {
   var context = canvas.getContext("2d");
   context.fillRect(1,0, 2, 2);
 
   //context.font = "bold 12px sans-serif";
-  //context.font = "'Lusitana', serif;"
-  context.font = "notevenafont;"
+  context.font = "'Lusitana', serif;"
   context.textBaseline = "top";
   context.fillText("The lazy brown fox &c.",11, 1);
-
-  fillForm(canvas);
 }
 
-$(document).ready(function() {
-    if(!supportsCanvas()) {
-      alert("No canvas support");
-    }
-    if(!supportsCanvasText()) {
-      alert("No canvas text");
-    }
+function runExperiment(name, canvasid) {
+  if(!supportsCanvas()) {
+    //alert("No canvas support");
+    return false;
+  }
+  if(!supportsCanvasText()) {
+    return false;
+  }
 
-    draw();
-});
+  var canvas = document.getElementById("scratch");
+  if(canvas === null) {
+    canvas = document.createElement("canvas");
+  }
+
+  draw(canvas);
+
+  fillForm(name, canvas);
+}
 

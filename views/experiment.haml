@@ -1,3 +1,7 @@
+:javascript
+  $(document).ready(function() {
+    runExperiment("#{@exp.name}", "scratch");
+  });
 
 %nav
   %a{:href=>"/", :rel => "up"} Experiments

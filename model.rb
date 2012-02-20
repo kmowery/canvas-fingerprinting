@@ -39,6 +39,7 @@ class Create < ActiveRecord::Migration
       t.string :name
       t.string :scripts
       t.string :canvas_size
+      t.boolean :mt
     end
 
     create_table :canvas do |t|

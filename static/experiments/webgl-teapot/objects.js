@@ -1,6 +1,9 @@
 
 // TODO: deal with active texture somehow?
-function Texture(imageURL, textureCoords) {
+function Texture(owner, imageURL, textureCoords) {
+  this.owner = owner;
+  var gl = this.owner.gl;
+
   this.gltexture = gl.createTexture();
 
   this.textureCoords = textureCoords;
@@ -27,12 +30,15 @@ function Texture(imageURL, textureCoords) {
 
     gl.bindTexture(gl.TEXTURE_2D, null);
 
-    draw();
+    owner.draw();
   }
   this.image.src = imageURL;
 }
 
-function VisibleObject( vertices, indices, texture, location, rotation ) {
+function VisibleObject(owner, vertices, indices, texture, location, rotation ) {
+  this.owner = owner;
+  var gl = this.owner.gl;
+
   this.vertices = vertices;
   this.indices = indices;
   this.numVertices = vertices.length / 3;
@@ -108,14 +114,17 @@ VisibleObject.prototype.makeNormals = function() {
 }
 
 VisibleObject.prototype.draw = function(perspective) {
-  pushMVMatrix();
+  var gl = this.owner.gl;
+  var shaderProgram = this.owner.shaderProgram;
 
-  mat4.translate(mvMatrix, this.location);
+  this.owner.pushMVMatrix();
+
+  mat4.translate(this.owner.mvMatrix, this.location);
 
   if(this.rotation !== null) {
-    mat4.rotateX(mvMatrix, this.rotation[0], mvMatrix);
-    mat4.rotateY(mvMatrix, this.rotation[1], mvMatrix);
-    mat4.rotateZ(mvMatrix, this.rotation[2], mvMatrix);
+    mat4.rotateX(this.owner.mvMatrix, this.rotation[0], this.owner.mvMatrix);
+    mat4.rotateY(this.owner.mvMatrix, this.rotation[1], this.owner.mvMatrix);
+    mat4.rotateZ(this.owner.mvMatrix, this.rotation[2], this.owner.mvMatrix);
   }
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
@@ -142,16 +151,16 @@ VisibleObject.prototype.draw = function(perspective) {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
   gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, perspective);
-  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, this.owner.mvMatrix);
 
   // magic. I might have known what this did once while I was taking graphics...
   var normalMatrix =  mat3.create();
-  mat4.toInverseMat3(mvMatrix, normalMatrix);
+  mat4.toInverseMat3(this.owner.mvMatrix, normalMatrix);
   mat3.transpose(normalMatrix);
   gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 
   gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
 
-  popMVMatrix();
+  this.owner.popMVMatrix();
 }
 
