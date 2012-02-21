@@ -11,6 +11,9 @@ require 'experiments.rb'
 # gem install activerecord sinatra sinatra-contrib json sqlite3 thin haml facets
 
 set :public_folder, File.dirname(__FILE__) + '/static'
+
+# Turn off the X-Frame header to allow for mturk
+set :protection, :except => :frame_options
 enable :sessions
 
 helpers do
