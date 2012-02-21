@@ -144,7 +144,7 @@
       $("#renderer").val(gl.getParameter(gl.RENDERER));
       $("#webglvendor").val(gl.getParameter(gl.VENDOR));
       $("#webglversion").val(gl.getParameter(gl.VERSION));
-      }
+    }
   });
 
 #idnoscript
@@ -243,8 +243,8 @@
 %div#survey
   %h2
     Survey
-  %form#surveyform{:action=>"/mt", :method=>"post"}
-    /%form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
+  /%form#surveyform{:action=>"/mt", :method=>"post"}
+  %form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
     %textarea#userinput{:name=>"input", :rows=>"20", :cols=>"80"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}
