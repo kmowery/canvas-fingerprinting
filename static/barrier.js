@@ -32,6 +32,8 @@ Barrier.prototype.register = function(tag) {
 }
 
 Barrier.prototype.notify = function(tag) {
+  var debug = 1;
+
   if(tag in this.outstanding) {
     delete(this.outstanding[tag]);
     this.outstanding.size--;

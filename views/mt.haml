@@ -87,20 +87,21 @@
   }
 
   function postForm() {
-    alert("posting form lol");
+    $("#surveyform").submit();
   }
 
   var mtBarrier = new Barrier(postForm);
 
   $(document).ready(function() {
+    mtBarrier.register("user");
+
     showPlatformInstructions();
     #{
       @experiments.map {|exp|
-        "runExperiment(\"#{exp.name}\", null);\n  "
-        "mtBarrier.register(\"#{exp.name}\");"
+        "mtBarrier.register(\"#{exp.name}\");\n" +
+        "runExperiment(\"#{exp.name}\", null);"
       }.join('\n')
     }
-    mtBarrier.register("user");
 
 
     var canvas = document.createElement("canvas");
@@ -117,8 +118,6 @@
     %p
       %em{:style=>"font-size:200%"}
         You must have JavaScript enabled to complete this HIT.
-
-
 
 #instructions
   %h1 Instructions
@@ -186,7 +185,7 @@
 %div#survey
   %h2
     Survey
-  %form#submit{:action=>"/mt", :method=>"post"}
+  %form#surveyform{:action=>"/mt", :method=>"post"}
     %input#userinput{:name=>"input", :type=>"textarea", :rows=>"13", :cols=>"40"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}

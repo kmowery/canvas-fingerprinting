@@ -27,7 +27,7 @@ registerExperiment("dev", function(name, canvasid) {
     return false;
   }
 
-  var canvas = document.getElementById(canvasi);
+  var canvas = document.getElementById(canvasid);
   if(canvas === null) {
     canvas = document.createElement("canvas");
   }
