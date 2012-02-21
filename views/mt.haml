@@ -76,10 +76,19 @@
     var browser = getBrowser();
     var os = getOS();
 
+
     if(browser[0] === null || os[0] === null) {
       // Give up. something went horribly wrong.
       $("#nowebgl").show();
-    } else if(!supportsWebGL()) {
+      return;
+    }
+
+    if(gup('assignmentId') == "ASSIGNMENT_ID_NOT_AVAILABLE" &&
+       supportsWebGL() && suuportsCanvas() && supportsCanvasText()) {
+       $("#banner").show();
+    }
+
+    if(!supportsWebGL()) {
       $("#nowebgl").show();
     } else {
       // Show the instructions
@@ -141,6 +150,10 @@
     %p
       %em{:style=>"font-size:200%"}
         You must have JavaScript enabled to complete this HIT.
+
+#banner
+  %h2 Your browser supports canvas and WebGL!
+  %h3 You'll get a 10&cent; bonus for completing this HIT.
 
 #instructions
   %h1 Instructions
