@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'model.rb'
+require_relative '../model.rb'
 
 c = Create.new
 c.up
@@ -10,4 +10,6 @@ a.up
 
 links = AddLinks.new
 links.up
+
+require_relative '../experiments.rb'
 

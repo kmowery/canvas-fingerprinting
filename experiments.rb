@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w -rubygems
-require 'model.rb'
+require_relative 'model.rb'
 
 require 'find'
 

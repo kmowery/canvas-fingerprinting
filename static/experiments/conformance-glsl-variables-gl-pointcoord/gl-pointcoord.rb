@@ -1,4 +1,3 @@
-require 'model.rb'
 
 gl_pointcoord = Experiment.find_or_create_by_name('conformance-gl-pointcoord')
 gl_pointcoord.name = "conformance-gl-pointcoord"

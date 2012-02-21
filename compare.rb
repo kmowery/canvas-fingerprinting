@@ -5,8 +5,8 @@ require 'sinatra/reloader' if development?
 require 'haml'
 require 'facets/hash/except'
 
-require 'model.rb'
-require 'experiments.rb'
+require_relative 'model.rb'
+require_relative 'experiments.rb'
 
 # gem install activerecord sinatra sinatra-contrib json sqlite3 thin haml facets
 
