@@ -23,6 +23,7 @@ webgl_teapot.name = "webgl-teapot"
 webgl_teapot.canvas_size = {:width => 250, :height => 250}
 webgl_teapot.scripts = [
   "/gl-matrix-min-1.2.3.js",
+  "/barrier.js",
   "/webgl-debug.js",
   "/experiments/webgl-teapot/webgl.js",
   "/experiments/webgl-teapot/shaders.js",

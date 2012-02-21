@@ -24,8 +24,6 @@
     return false;
   }
 
-
-
   function getBrowser() {
     var ua = navigator.userAgent;
 
@@ -84,22 +82,34 @@
     }
   }
 
+  function submitClicked() {
+    mtBarrier.notify("user");
+  }
+
+  function postForm() {
+    alert("posting form lol");
+  }
+
+  var mtBarrier = new Barrier(postForm);
+
   $(document).ready(function() {
     showPlatformInstructions();
     #{
       @experiments.map {|exp|
-        "runExperiment(\"#{exp.name}\", null);"
+        "runExperiment(\"#{exp.name}\", null);\n  "
+        "mtBarrier.register(\"#{exp.name}\");"
       }.join('\n')
     }
+    mtBarrier.register("user");
 
 
-  var canvas = document.createElement("canvas");
-  gl = canvas.getContext("experimental-webgl");
+    var canvas = document.createElement("canvas");
+    gl = canvas.getContext("experimental-webgl");
 
-  $("#renderer").val(gl.getParameter(gl.RENDERER));
-  $("#webglvendor").val(gl.getParameter(gl.VENDOR));
-  $("#webglversion").val(gl.getParameter(gl.VERSION));
-  $("#useragent").val(navigator.userAgent);
+    $("#renderer").val(gl.getParameter(gl.RENDERER));
+    $("#webglvendor").val(gl.getParameter(gl.VENDOR));
+    $("#webglversion").val(gl.getParameter(gl.VERSION));
+    $("#useragent").val(navigator.userAgent);
   });
 
 #idnoscript
@@ -187,5 +197,5 @@
     - @experiments.each do |e|
       %input{:id=> "exp-" + e.name, :name=> "exp-" + e.name, :type=>"hidden"}
 
-    %input{:type=>"submit", :value=>"Submit"}
+    %input{:type=>"button", :value=>"Submit", :onclick=>"submitClicked();"}
 

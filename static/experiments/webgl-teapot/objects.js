@@ -16,6 +16,9 @@ function Texture(owner, imageURL, textureCoords) {
   var texture = this;
 
   this.image = new Image();
+
+  this.image.barriertag = this.owner.drawBarrier.register();
+  var barriertag = this.image.barriertag;
   this.image.onload = function() {
     gl.bindTexture(gl.TEXTURE_2D, texture.gltexture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -30,7 +33,8 @@ function Texture(owner, imageURL, textureCoords) {
 
     gl.bindTexture(gl.TEXTURE_2D, null);
 
-    owner.draw();
+    //owner.draw();
+    owner.drawBarrier.notify(barriertag);
   }
   this.image.src = imageURL;
 }

@@ -28,6 +28,10 @@ function fillForm(experiment, canvas) {
   }
 
   form.value = base64png;
+
+  if((typeof mtBarrier) !== "undefined") {
+    mtBarrier.notify(experiment);
+  }
 }
 
 function experimentDied(experiment, reason) {
@@ -43,6 +47,10 @@ function experimentDied(experiment, reason) {
   }
 
   form.value = reason;
+
+  if((typeof mtBarrier) !== "undefined") {
+    mtBarrier.notify(experiment);
+  }
 }
 
 function fillFormById(id) {

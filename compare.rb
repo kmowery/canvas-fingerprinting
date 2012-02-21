@@ -132,7 +132,7 @@ get '/mt' do
   @scripts = @experiments.reduce([]) do |array, exp|
     array | exp.scripts
   end
-
+  @scripts = @scripts | ["/barrier.js"]
 
   haml :mt
 end

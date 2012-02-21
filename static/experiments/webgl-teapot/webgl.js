@@ -21,6 +21,13 @@ function WebGLTeapot(name, canvasid) {
   this.vertex_shaders = webgl_teapot_vertex_shaders();
   this.fragment_shaders = webgl_teapot_fragment_shaders();
 
+  var that = this;
+  this.drawBarrier = new Barrier(
+      function() {
+        that.draw();
+      }
+      );
+  this.drawBarrier.register("setup");
 }
 
 WebGLTeapot.prototype.setupShaders = function () {
@@ -248,7 +255,8 @@ WebGLTeapot.prototype.run = function () {
   //  [Math.PI/4, Math.PI/4, Math.PI/4]
   //  )];
 
-  this.draw();
+  this.drawBarrier.notify("setup");
+  //this.draw();
 
   //var renderer = gl.getParameter(gl.RENDERER);
   //var vendor = gl.getParameter(gl.VENDOR);

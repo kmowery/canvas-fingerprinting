@@ -13,7 +13,16 @@ Barrier.prototype.run = function() {
 }
 
 // Returns a tag. Pass this tag in to notify when you're ready.
-Barrier.prototype.register = function() {
+Barrier.prototype.register = function(tag) {
+  if(tag !== undefined) {
+    if(! (tag in this.outstanding)) {
+      // Semantics are a bit murky if you re-register a tag. Don't do it.
+      this.outstanding[tag] = true;
+      this.outstanding.size++;
+    }
+    return;
+  }
+
   var i = this.registered;
   this.registered++;
 
