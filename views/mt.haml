@@ -127,19 +127,39 @@
   #chrome.platform
     %ol
       %li Open a new window (Press <span class="specialkey"></span>+N).
-      %li Type "about:gpu" and press enter. TODO: TAKE PICTURE
+      %li
+        Type "about:gpu" and press enter.
+        %br
+        %img{:src=>"/screenshots/chrome-about-gpu-url.png"}
+      %li
+        You should see something that looks like this:
+        %br
+        %img{:src=>"/screenshots/chrome-about-gpu.png"}
+
       %li Select the entire page (<span class="specialkey"></span>+A) and copy the contents to the clipboard (<span class="specialkey"></span>+C).
       %li Click in the text area below and paste (<span class="specialkey"></span>+V).
-      %li It should look something like this: TODO: INSERT IMAGE
+      %li
+        If you've done it correctly, the form will look something like this:
+        %br
+        %img{:src=>"/screenshots/chrome-filled-form.png"}
       %li Press Submit!
 
   #firefox.platform
     %ol
       %li Open a new window (Press <span class="specialkey"></span>+N).
-      %li Type "about:support" and press enter. TODO: TAKE PICTURE
-      %li Click "Copy all to Clipboard".
+      %li
+        Type "about:support" and press enter.
+        %br
+        %img{:src=>"/screenshots/firefox-about-support-url.png"}
+      %li
+        Click "Copy all to Clipboard".
+        %br
+        %img{:src=>"/screenshots/firefox-copy-button.png"}
       %li Click in the text area below and paste (<span class="specialkey"></span>+V).
-      %li It should look something like this: TODO: INSERT IMAGE
+      %li
+        If you've done it correctly the form will look something like this:
+        %br
+        %img{:src=>"/screenshots/firefox-filled-form.png"}
       %li Press Submit!
 
   #safari.platform
@@ -188,7 +208,7 @@
   %h2
     Survey
   %form#surveyform{:action=>"/mt", :method=>"post"}
-    %input#userinput{:name=>"input", :type=>"textarea", :rows=>"13", :cols=>"40"}
+    %textarea#userinput{:name=>"input", :rows=>"20", :cols=>"80"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}
     %input#renderer{:name=>"renderer", :type=>"hidden"}
@@ -198,7 +218,8 @@
     - @experiments.each do |e|
       %input{:id=> "exp-" + e.name, :name=> "exp-" + e.name, :type=>"hidden"}
 
-    %input{:type=>"button", :value=>"Submit", :onclick=>"submitClicked();"}
+    %p
+      %input{:type=>"button", :value=>"Submit", :onclick=>"submitClicked();"}
   #surveydone
     %h1 Thank you! The survey will submit automatically in a moment.
     %p If it doesn't, please let us know.
