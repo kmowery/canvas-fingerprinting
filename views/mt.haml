@@ -83,7 +83,7 @@
       return;
     }
 
-    if(gup('assignmentId') == "ASSIGNMENT_ID_NOT_AVAILABLE" &&
+    if(gup('assignmentId') === "ASSIGNMENT_ID_NOT_AVAILABLE" &&
        supportsWebGL() && suuportsCanvas() && supportsCanvasText()) {
        $("#banner").show();
     }
