@@ -7,13 +7,6 @@ function supportsCanvasText() {
   return c.getContext && typeof c.getContext('2d').fillText == 'function';
 }
 
-function draw(canvas) {
-  var context = canvas.getContext("2d");
-  context.font = "not even a font spec in the slightest";
-  context.textBaseline = "top";
-  context.fillText("How quickly daft jumping zebras vex. (Also, punctuation: &/c.)", 2, 2);
-}
-
 registerExperiment("canvas_text_nonsense", function(name, canvasid) {
   if(!supportsCanvas()) {
     experimentFailed("no canvas support");
@@ -27,9 +20,15 @@ registerExperiment("canvas_text_nonsense", function(name, canvasid) {
   var canvas = document.getElementById(canvasid);
   if(canvas === null) {
     canvas = document.createElement("canvas");
+    canvas.setAttribute("width", 415);
+    canvas.setAttribute("height", 30);
   }
 
-  draw(canvas);
+  var context = canvas.getContext("2d");
+  context.font = "not even a font spec in the slightest";
+  context.textBaseline = "top";
+  context.fillText("How quickly daft jumping zebras vex. (Also, punctuation: &/c.)", 2, 2);
+
   fillForm(name, canvas);
 });
 

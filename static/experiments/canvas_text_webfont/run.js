@@ -7,13 +7,6 @@ function supportsCanvasText() {
   return c.getContext && typeof c.getContext('2d').fillText == 'function';
 }
 
-function draw(canvas) {
-  var context = canvas.getContext("2d");
-  context.font = "12pt 'Sirin Stencil'";
-  context.textBaseline = "top";
-  context.fillText("How quickly daft jumping zebras vex. (Also, punctuation: &/c.)", 2, 2);
-}
-
 registerExperiment("canvas_text_webfont", function(name, canvasid) {
   if(!supportsCanvas()) {
     experimentFailed("no canvas support");
@@ -27,6 +20,8 @@ registerExperiment("canvas_text_webfont", function(name, canvasid) {
   var canvas = document.getElementById(canvasid);
   if(canvas === null) {
     canvas = document.createElement("canvas");
+    canvas.setAttribute("width", 415);
+    canvas.setAttribute("height", 30);
   }
 
   WebFont.load({
@@ -36,13 +31,19 @@ registerExperiment("canvas_text_webfont", function(name, canvasid) {
 
     fontactive: function(fontFamily, fontDescription) {
       if(fontFamily === 'Sirin Stencil') {
-        draw(canvas);
+        var context = canvas.getContext("2d");
+        context.font = "12pt 'Sirin Stencil'";
+        context.textBaseline = "top";
+        context.fillText("How quickly daft jumping zebras vex. (Also, punctuation: &/c.)", 2, 2);
         fillForm(name, canvas);
       }
     },
     fontinactive: function(fontFamily, fontDescription) {
       if(fontFamily === 'Sirin Stencil') {
-        draw(canvas);
+        var context = canvas.getContext("2d");
+        context.font = "12pt 'Sirin Stencil'";
+        context.textBaseline = "top";
+        context.fillText("How quickly daft jumping zebras vex. (Also, punctuation: &/c.)", 2, 2);
         fillForm(name, canvas);
       }
     }
