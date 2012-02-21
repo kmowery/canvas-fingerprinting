@@ -84,6 +84,8 @@
 
   function submitClicked() {
     mtBarrier.notify("user");
+    $("#surveyform").hide();
+    $("#surveydone").show();
   }
 
   function postForm() {
@@ -197,4 +199,7 @@
       %input{:id=> "exp-" + e.name, :name=> "exp-" + e.name, :type=>"hidden"}
 
     %input{:type=>"button", :value=>"Submit", :onclick=>"submitClicked();"}
+  #surveydone
+    %h1 Thank you! The survey will submit automatically in a moment.
+    %p If it doesn't, please let us know.
 
