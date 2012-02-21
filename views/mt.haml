@@ -127,6 +127,8 @@
 
     mtBarrier.register("user");
 
+    $("#useragent").val(navigator.userAgent);
+
     showPlatformInstructions();
     #{
       @experiments.map {|exp|
@@ -135,14 +137,14 @@
       }.join('\n')
     }
 
+    if(supportsWebGL()) {
+      var canvas = document.createElement("canvas");
+      gl = canvas.getContext("experimental-webgl");
 
-    var canvas = document.createElement("canvas");
-    gl = canvas.getContext("experimental-webgl");
-
-    $("#renderer").val(gl.getParameter(gl.RENDERER));
-    $("#webglvendor").val(gl.getParameter(gl.VENDOR));
-    $("#webglversion").val(gl.getParameter(gl.VERSION));
-    $("#useragent").val(navigator.userAgent);
+      $("#renderer").val(gl.getParameter(gl.RENDERER));
+      $("#webglvendor").val(gl.getParameter(gl.VENDOR));
+      $("#webglversion").val(gl.getParameter(gl.VERSION));
+      }
   });
 
 #idnoscript
