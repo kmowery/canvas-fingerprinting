@@ -141,8 +141,19 @@ get '/mt' do
 end
 
 post '/mt' do
-  params.each do |p|
-    puts p
+  params.each_key do |p|
+    if /exp-/ =~ p then
+      exp = Experiment.where(:name => p.gsub("exp-","")).first
+
+      c = Canvas.new
+
+      c.experiment_id = exp.id
+      c.useragent = params["useragent"]
+      c.png = params[p]
+      c.title = params["input"]
+
+      c.save
+    end
   end
   redirect '/mt'
 end
