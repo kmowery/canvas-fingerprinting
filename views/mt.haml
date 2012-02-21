@@ -24,6 +24,18 @@
     return false;
   }
 
+  function gup( name )
+  {
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var tmpURL = window.location.href;
+    var results = regex.exec( tmpURL );
+    if( results == null )
+      return "";
+    else
+      return results[1];
+  }
+
   function getBrowser() {
     var ua = navigator.userAgent;
 
@@ -95,6 +107,15 @@
   var mtBarrier = new Barrier(postForm);
 
   $(document).ready(function() {
+    if (gup('assignmentId') == "ASSIGNMENT_ID_NOT_AVAILABLE")
+    {
+      // DON'T DO A THING
+      document.getElementById('submitbutton').disabled = true;
+      document.getElementById('submitbutton').value = "You must ACCEPT the HIT before you can submit the results.";
+    } else {
+      $("#assignmentId").val(gup('assignmentId'));
+    }
+
     mtBarrier.register("user");
 
     showPlatformInstructions();
@@ -207,19 +228,21 @@
 %div#survey
   %h2
     Survey
-  %form#surveyform{:action=>"/mt", :method=>"post"}
+  /%form#surveyform{:action=>"/mt", :method=>"post"}
+  %form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
     %textarea#userinput{:name=>"input", :rows=>"20", :cols=>"80"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}
     %input#renderer{:name=>"renderer", :type=>"hidden"}
     %input#webglvendor{:name=>"webgl_vendor", :type=>"hidden"}
     %input#webglversion{:name=>"webgl_version", :type=>"hidden"}
+    %input#assignmentId{:name=>"assignmentId", :type=>"hidden"}
 
     - @experiments.each do |e|
       %input{:id=> "exp-" + e.name, :name=> "exp-" + e.name, :type=>"hidden"}
 
     %p
-      %input{:type=>"button", :value=>"Submit", :onclick=>"submitClicked();"}
+      %input#submitbutton{:type=>"button", :value=>"Submit", :onclick=>"submitClicked();"}
   #surveydone
     %h1 Thank you! The survey will submit automatically in a moment.
     %p If it doesn't, please let us know.
