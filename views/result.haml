@@ -49,6 +49,12 @@
 
   #attachment
 
+  #userinput
+    - if ! @result.userinput.nil?  and @result.userinput.length > 0
+      %h3 User Input
+      %pre
+        = @result.userinput
+
   %p Pixels:
   #pixels
 

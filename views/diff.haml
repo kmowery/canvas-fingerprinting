@@ -38,7 +38,7 @@
   ];
   for(var i = 0; i < multipixels.length; i++) {
     // If there's no png, don't parse it
-    if(multipixels[i]["png"] == null) {
+    if(multipixels[i]["png"] == null || multipixels[i]["png"] === "no webgl") {
       continue;
     }
 
@@ -100,6 +100,8 @@
   %h2 Result #{@result.id}
   - if not @result.title.nil?
     %h3 Title: #{@result.title}
+  - if not @result.useragent.nil?
+    %h3 Useragent: #{@result.useragent}
 
   #diffs
 

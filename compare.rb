@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'haml'
 require 'facets/hash/except'
+require 'pp'
 
 require_relative 'model.rb'
 require_relative 'experiments.rb'
@@ -31,11 +32,11 @@ helpers do
       return "/exp/#{exp[:name]}/results/#{result[:id]}"
     when :diff
       return "/exp/#{exp[:name]}/compare/#{result[:id]}"
+    when :groups
+      return "/exp/#{exp[:name]}/groups/"
     end
   end
 end
-
-
 
 get '/' do
   @experiments = Experiment.all
@@ -76,8 +77,13 @@ post '/exp/:experiment/results' do |experiment|
   puts "Creating new canvas" if @result.nil?
   @result = Canvas.create() if @result.nil?
 
+  sample = Sample.new
+  sample.useragent = env["HTTP_USER_AGENT"]
+  sample.userinput = params["title"]
+  sample.save
+
   @result.experiment_id = @exp.id
-  @result.useragent = env["HTTP_USER_AGENT"]
+  @result.sample_id = sample.id
   @result.title = params["title"]
   @result.pixels = params["pixels"]
   @result.png = params["png"]
@@ -120,12 +126,21 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
 
   # Policy: we store one sample per user-agent.
   # When and if we discover a collision here, we'll revisit.
+  #
   @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
   redirect link_to(:results, @exp) and return if @result.nil?
 
   @results = Canvas.where(:experiment_id => @exp.id)
 
   haml :diff
+end
+
+get '/exp/:experiment/groups/?' do |experiment|
+  @exp = Experiment.where(:name => experiment).first
+  @results = Canvas.find_all_by_experiment_id(@exp.id)
+  @groups = @results.group_by {|x| x.png}.values
+
+  haml :result_groups
 end
 
 
