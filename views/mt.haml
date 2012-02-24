@@ -121,7 +121,7 @@
 
     // Make the upload call back to me. When it's done, report up to amazon
     $.ajax({
-      url: "http://localhost:4567/mt",
+      url: "http://canta.ucsd.edu:4567/mt",
       type: "POST",
       data: vars,
       complete: function() {
@@ -265,8 +265,8 @@
   %h2
     Survey
   -#%form#surveyform{:action=>"/mt", :method=>"post"}
-  -#/%form#surveyform{:action=>"http://www.mturk.com/mturk/externalSubmit", :method=>"post"}
-  %form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
+  -#%form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
+  %form#surveyform{:action=>"http://www.mturk.com/mturk/externalSubmit", :method=>"post"}
     %textarea#userinput{:name=>"input", :rows=>"20", :cols=>"80"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}
