@@ -23,6 +23,7 @@ html.css('tr').each {|row|
 
     # If we find an answer in this row, check for links that are IDs
     userid = row.css("a").first.children.first.to_s.strip
+    assignmentid = (/'.*'.*'(.*)'/.match row.css("a").first.attribute("onclick")).captures[0]
 
     # Why is there a <dl>? I don't know.
     dl = span.children[0]
@@ -52,7 +53,7 @@ html.css('tr').each {|row|
       c    .png = row[experiment_name]
 
       if /exp-webgl-teapot/ =~ experiment_name and c.png != "no webgl" then
-        puts userid
+        puts "./grantBonus.sh -workerid #{userid} -amount 0.10 -reason \"Your browser supports WebGL\" -assignment #{assignmentid}"
       end
 
       c.save
