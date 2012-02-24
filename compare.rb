@@ -40,6 +40,7 @@ end
 
 get '/' do
   @experiments = Experiment.all
+  @experiments.sort_by! {|exp| exp.name}
   haml :list_experiments
 end
 
