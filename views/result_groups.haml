@@ -14,8 +14,8 @@
 %h2 Results
 
 - @groups.each do |group|
+  %img{:src=>"#{group[0].png}"}
   %ol
-    %img{:src=>"#{group[0].png}"}
     - group.each do |result|
       %li
         %a{:href=>"#{link_to(:diff, @exp, result)}"} (diff)

@@ -29,61 +29,20 @@
   prime.image.tag = b.register();
   prime.image.onload = makeImageCallback(prime, b, prime.image.tag);
 
-  var multipixels = [
-    #{
-      @results.map {|result|
-        result.to_json
-      }.join(',\n')
-    }
-  ];
-  for(var i = 0; i < multipixels.length; i++) {
-    // If there's no png, don't parse it
-    if(multipixels[i]["png"] == null || multipixels[i]["png"] === "no webgl") {
-      continue;
-    }
-
-    multipixels[i].image = new Image();
-    multipixels[i].image.src = multipixels[i]["png"];
-    multipixels[i].image.tag = b.register();
-    multipixels[i].image.onload = makeImageCallback(multipixels[i], b, multipixels[i].image.tag);
-  }
-
   function doDiffs() {
-    var attachment_point = document.getElementById("diffs");
-    var idgen = 0;
+    for(var i = 0; i < #{@groups.length}; i++) {
+      var attachment_point = document.getElementById("attach-"+i);
+      var canvasinfo = imgToCanvas(document.getElementById("orig-"+i));
 
-    for(var id in multipixels) {
-      if(multipixels[id].canvas == null) {
-        continue;
-      }
-      idgen += 1;
-
-      var p = document.createElement("p");
-      var p2 = document.createElement("p");
-      var ua = document.createElement("a");
-
-      var idspan = document.createElement("span");
-
-      idspan.innerHTML = multipixels[id]["id"] + ": ";
-
-      ua.href = "/exp/#{@exp.name}/results/" + multipixels[id]["id"];
-      ua.innerHTML = multipixels[id]["title"] + ": " + multipixels[id]["useragent"];
-
-      p2.appendChild(idspan);
-      p2.appendChild(ua);
-      p.appendChild(p2);
-
-      if(canvasDiffer(prime.canvas, multipixels[id].canvas)) {
+      if(canvasDiffer(prime.canvas, canvasinfo)) {
         var differ = document.createElement("div");
         differ.innerHTML = "Differ!";
-        p.appendChild(differ);
+        attachment_point.appendChild(differ);
       }
 
-      var diffs = diff(prime.canvas, multipixels[id].canvas);
-      p.appendChild(diffs);
-      p.appendChild(diffmap(prime.canvas, multipixels[id].canvas));
-
-      attachment_point.appendChild(p);
+      var diffs = diff(prime.canvas, canvasinfo);
+      attachment_point.appendChild(diffs);
+      attachment_point.appendChild(diffmap(prime.canvas, canvasinfo));
     }
   }
 
@@ -109,6 +68,15 @@
     %h3 Useragent: #{@result.useragent}
 
   #diffs
+    - @groups.each_with_index do |group, i|
+      %div{:id=>"attach-#{i}"}
+      %img{:src=>"#{group[0].png}", :class=>"originalimage", :id=>"orig-#{i}"}
+      %ol
+        - group.each do |result|
+          %li
+            %a{:href=>"#{link_to(:diff, @exp, result)}"} (diff)
+            %a{:href=>"#{link_to(:result, @exp, result)}"}
+              = result.id.to_s + ": " + result.title
 
   #hide{:style=>"display:none;"}
     = render :haml, :canvas, :layout => false

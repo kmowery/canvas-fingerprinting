@@ -131,7 +131,12 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
   @result = Canvas.where(:id => id, :experiment_id => @exp.id).first
   redirect link_to(:results, @exp) and return if @result.nil?
 
+  # There's no need to display the diff against every element. Use our group-by
+  # methodology to only show diffs that matter
   @results = Canvas.where(:experiment_id => @exp.id)
+  @groups = @results.group_by {|x| x.png}.values
+  @groups.map! { |array| array.sort_by {|x| x.sample.graphics_card} }
+  @groups.sort_by! {|group| group[0].sample.browser + group[0].sample.graphics_card}
 
   haml :diff
 end
