@@ -28,7 +28,9 @@ class Sample < ActiveRecord::Base
     # Safari needs to come after Chrome and Firefox
     return "Safari " + $1 if /Safari/ =~ useragent and /Version\/([0-9\.]+)/ =~ useragent
 
-    return nil
+    return "Opera " + $1 if /Opera\/([0-9\.]+)/ =~ useragent
+
+    return "UNKNOWN"
   end
 
   def os
@@ -42,7 +44,8 @@ class Sample < ActiveRecord::Base
     return "OSX 10.7.2" if /Mac OS X 10_7_2/ =~ useragent
     return "OSX 10.7.1" if /Mac OS X 10_7_1/ =~ useragent
     return "OSX 10.7.0" if /Mac OS X 10_7_0/ =~ useragent
-    return nil
+    return "OSX 10.6.8" if /Mac OS X 10_6_8/ =~ useragent
+    return "UNKNOWN"
   end
 
   def graphics_card

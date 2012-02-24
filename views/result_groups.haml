@@ -1,0 +1,27 @@
+
+%nav
+  %a{:href=>"/", :rel => "up"} Experiments
+  &gt;
+  %a{:href=>"#{link_to(:exp, @exp)}"} #{@exp.name}
+  &gt;
+  %b
+    Groups
+
+%h1
+  Experiment
+  %a{:href=>"#{link_to(:exp, @exp)}"} #{@exp.name}
+
+%h2 Results
+
+- @groups.each do |group|
+  %ol
+    %img{:src=>"#{group[0].png}"}
+    - group.each do |result|
+      %li
+        %a{:href=>"#{link_to(:diff, @exp, result)}"} (diff)
+        %a{:href=>"#{link_to(:result, @exp, result)}"}
+          = result.id.to_s + ": " + result.title
+          -#+ ": " + result.useragent
+  %hr
+
+

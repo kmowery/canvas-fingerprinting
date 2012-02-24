@@ -1,0 +1,19 @@
+
+%nav
+  %b
+    Groups
+
+%h2 Results
+
+- @groups.each do |group|
+  %ol
+    %img{:src=>"#{group[0].canvas[0].png}"}
+    - group.each do |sample|
+      %li
+        = sample.title
+        -#%a{:href=>"#{link_to(:diff, @exp, result)}"} (diff)
+        -#%a{:href=>"#{link_to(:result, @exp, result)}"}
+        -#  = result.id.to_s + ": " + result.title
+    -#  -#    -#+ ": " + result.useragent
+  %hr
+
