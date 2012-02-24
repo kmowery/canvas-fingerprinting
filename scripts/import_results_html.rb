@@ -5,7 +5,6 @@ require 'nokogiri'
 require 'pp'
 
 require_relative '../model.rb'
-require_relative '../classify.rb'
 
 if ARGV.length == 0 then
   puts "I need a filename"
@@ -30,12 +29,17 @@ html.css('span[id^="answer_long"]').each {|span|
   s = Sample.new
   s.useragent = row["useragent"]
   s.userinput = row["input"]
+  s.webglrenderer = row["renderer"]
+  s.webglversion = row["webglversion"]
+  s.webglvendor = row["webglvendor"]
   s.save
+
+  pp row if /Safari/ =~ s.browser
 
   puts "Browser unclear: " + s.useragent if s.browser.nil?
   puts "OS unclear: " + s.useragent if s.os.nil?
 
-  row.keys.select{ |k|  k =~ /exp-/ }.each do |experiment_name|
+  row.keys.select{ |k|  k =~ /exp-/ }.sort.each do |experiment_name|
     exp = Experiment.where(:name => experiment_name.gsub("exp-","")).first
     c     = Canvas.new
 

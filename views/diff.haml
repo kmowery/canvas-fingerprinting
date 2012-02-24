@@ -62,9 +62,14 @@
       var p2 = document.createElement("p");
       var ua = document.createElement("a");
 
+      var idspan = document.createElement("span");
+
+      idspan.innerHTML = multipixels[id]["id"] + ": ";
+
       ua.href = "/exp/#{@exp.name}/results/" + multipixels[id]["id"];
       ua.innerHTML = multipixels[id]["title"] + ": " + multipixels[id]["useragent"];
 
+      p2.appendChild(idspan);
       p2.appendChild(ua);
       p.appendChild(p2);
 

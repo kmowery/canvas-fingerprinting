@@ -135,10 +135,27 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
   haml :diff
 end
 
+get '/groups/?' do
+  @exps = Experiment.all
+  @samples = Sample.all
+
+  @groups = @samples.group_by {|sample| sample.canvas.sort {|c| c.experiment_id}.map{|c| c.png}}.values
+
+  puts @groups.length
+
+  haml :all_groups
+end
+
 get '/exp/:experiment/groups/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
   @results = Canvas.find_all_by_experiment_id(@exp.id)
   @groups = @results.group_by {|x| x.png}.values
+
+  # Sort each group by graphics card
+  @groups.map! { |array| array.sort_by {|x| x.sample.graphics_card} }
+
+  # Sort groups by first browser
+  @groups.sort_by! {|group| group[0].sample.browser + group[0].sample.graphics_card}
 
   haml :result_groups
 end
@@ -156,19 +173,26 @@ get '/mt' do
 end
 
 post '/mt' do
-  params.each_key do |p|
-    if /exp-/ =~ p then
-      exp = Experiment.where(:name => p.gsub("exp-","")).first
+  # TODO: add some sort of verification
+  sample = Sample.new
+  sample.useragent = params["useragent"]
+  sample.userinput = params["input"]
+  sample.webglvendor = params["webglvendor"]
+  sample.webglversion = params["webglversion"]
+  sample.webglrenderer = params["renderer"]
 
-      c = Canvas.new
+  sample.assignmentid = params["assignmentId"]
+  sample.save
 
-      c.experiment_id = exp.id
-      c.useragent = params["useragent"]
-      c.png = params[p]
-      c.title = params["input"]
+  params.select {|p| /exp-/ =~ p}.each_key do |p|
+    exp = Experiment.where(:name => p.gsub("exp-","")).first
+    c = Canvas.new
 
-      c.save
-    end
+    c.experiment_id = exp.id
+    c.sample_id = sample.id
+    c.png = params[p]
+
+    c.save
   end
   redirect '/mt'
 end

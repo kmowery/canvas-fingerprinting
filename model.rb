@@ -9,7 +9,7 @@ ActiveRecord::Base.establish_connection({:adapter=>'sqlite3',:database=>'index.d
 ActiveRecord::Base.include_root_in_json = false
 
 class Experiment < ActiveRecord::Base
-  has_many :canvas
+  has_many :canvas, :class_name => "Canvas"
 
   serialize :canvas_size, Hash
   serialize :scripts, Array
@@ -17,7 +17,7 @@ class Experiment < ActiveRecord::Base
 end
 
 class Sample < ActiveRecord::Base
-  has_many :canvas
+  has_many :canvas, :class_name => "Canvas"
 
   def browser
     return "Chrome " + $1 + " (WOW64)" if /WOW64/ =~ useragent and /Chrome\/([0-9\.]+)/ =~ useragent
@@ -45,8 +45,25 @@ class Sample < ActiveRecord::Base
     return nil
   end
 
+  def graphics_card
+    # Firefox
+    if /Adapter Description\r?\n([^\n]*?)\n/m =~ userinput then
+      return $1.strip
+    end
+    return $1.strip if /Karten-Beschreibung(.*?)Vendor-ID/m =~ userinput
+    return $1.strip if /Description de la carte(.*?)ID du vendeur/m =~ userinput
+
+    # Google Chrome
+    return $1.strip if /szDescription(.*)/ =~ userinput
+    return $1.strip if /GL_RENDERER(.*)/ =~ userinput and $1.length > 0
+
+    # TODO: add safari
+
+    return "UNKNOWN"
+  end
+
   def title
-    return browser + " " + os
+    return "(#{graphics_card}) (#{browser}) (#{os})"
   end
 end
 
@@ -93,6 +110,10 @@ class Create < ActiveRecord::Migration
     create_table :samples do |t|
       t.string :useragent
       t.string :userinput
+      t.string :webglvendor
+      t.string :webglversion
+      t.string :webglrenderer
+      t.string :assignmentid
     end
 
     create_table :canvas do |t|
