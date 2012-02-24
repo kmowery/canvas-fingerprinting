@@ -125,10 +125,9 @@
       type: "POST",
       data: vars,
       complete: function() {
-        alert("done~");
-        //var form = document.getElementById("surveyform");
-        //form.submit();
-        //$("#surveyform").submit();
+        var form = document.getElementById("surveyform");
+        form.submit();
+        $("#surveyform").submit();
       },
     });
   }
@@ -265,9 +264,9 @@
 %div#survey
   %h2
     Survey
-  /%form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
-  /%form#surveyform{:action=>"http://www.mturk.com/mturk/externalSubmit", :method=>"post"}
-  %form#surveyform{:action=>"/mt", :method=>"post"}
+  -#%form#surveyform{:action=>"/mt", :method=>"post"}
+  -#/%form#surveyform{:action=>"http://www.mturk.com/mturk/externalSubmit", :method=>"post"}
+  %form#surveyform{:action=>"http://workersandbox.mturk.com/mturk/externalSubmit", :method=>"post"}
     %textarea#userinput{:name=>"input", :rows=>"20", :cols=>"80"}
 
     %input#useragent{:name=>"useragent", :type=>"hidden"}
