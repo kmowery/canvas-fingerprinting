@@ -34,11 +34,11 @@
       var attachment_point = document.getElementById("attach-"+i);
       var canvasinfo = imgToCanvas(document.getElementById("orig-"+i));
 
-      if(canvasDiffer(prime.canvas, canvasinfo)) {
-        var differ = document.createElement("div");
-        differ.innerHTML = "Differ!";
-        attachment_point.appendChild(differ);
-      }
+      //if(canvasDiffer(prime.canvas, canvasinfo)) {
+      //  var differ = document.createElement("div");
+      //  differ.innerHTML = "Differ!";
+      //  attachment_point.appendChild(differ);
+      //}
 
       var diffs = diff(prime.canvas, canvasinfo);
       attachment_point.appendChild(diffs);
@@ -70,8 +70,7 @@
   #diffs
     - @groups.each_with_index do |group, i|
       %img{:src=>"#{group[0].png}", :id=>"orig-#{i}"}
-      %br
-      %div{:id=>"attach-#{i}"}
+      %div{:id=>"attach-#{i}", :style=>"float:right;"}
       %ol
         - group.each do |result|
           %li

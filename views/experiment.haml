@@ -9,14 +9,12 @@
   %b
     #{@exp.name}
 
-%div#supertest{:style=>"font: not even a font spec at all;"} Ummm am i doing it right
-
-
 #experiment
   %h1 Experiment #{@exp.name}
 
   %p#info
-    %a{:href=>"#{link_to(:results, @exp)}"} See Results
+    %a{:href=>"#{link_to(:results, @exp)}"} (results)
+    %a{:href=>"#{link_to(:groups, @exp)}"} (groups)
 
   = render :haml, :canvas, :layout => false
 
