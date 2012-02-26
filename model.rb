@@ -49,18 +49,24 @@ class Sample < ActiveRecord::Base
   end
 
   def graphics_card
+    device_id = ""
+    device_id = " (Device #{$1.strip})" if /Device ID\r?\n([^\n]*?)\n/m =~ userinput
+    device_id = " (Device #{$1.strip})" if /Device ID(.*)Adapter RAM/m =~ userinput
+    device_id = " (Device #{$1.strip})" if /szDeviceId(.*)/ =~ userinput
+
     # Firefox
     if /Adapter Description\r?\n([^\n]*?)\n/m =~ userinput then
-      return $1.strip
+      return $1.strip + device_id
     end
-    return $1.strip if /Karten-Beschreibung(.*?)Vendor-ID/m =~ userinput
-    return $1.strip if /Description de la carte(.*?)ID du vendeur/m =~ userinput
+    return $1.strip + device_id if /Adapter Description(.*?)Vendor ID/ =~ userinput
+    return $1.strip + device_id if /Karten-Beschreibung(.*?)Vendor-ID/m =~ userinput
+    return $1.strip + device_id if /Description de la carte(.*?)ID du vendeur/m =~ userinput
 
     # Google Chrome
-    return $1.strip if /szDescription(.*)/ =~ userinput
-    return $1.strip if /GL_RENDERER(.*)/ =~ userinput and $1.length > 0
+    return $1.strip + device_id if /szDescription(.*)/ =~ userinput
+    return $1.strip + device_id if /GL_RENDERER(.*)/ =~ userinput and $1.length > 0
 
-    # TODO: add safari
+    return webglrenderer if /Safari/ =~ browser
 
     return "UNKNOWN"
   end
