@@ -124,6 +124,7 @@ class Create < ActiveRecord::Migration
     end
 
     create_table :samples do |t|
+      t.string :userid
       t.string :useragent
       t.string :userinput
       t.string :webglvendor

@@ -36,6 +36,7 @@ ARGV.each {|filename|
       }
 
       s = Sample.new
+      s.userid = userid
       s.useragent = row["useragent"]
       s.userinput = row["input"]
       s.webglrenderer = row["renderer"]
@@ -54,9 +55,9 @@ ARGV.each {|filename|
         c    .sample_id = s.id
         c    .png = row[experiment_name]
 
-        if /exp-webgl-teapot/ =~ experiment_name and c.png != "no webgl" then
-          puts "./grantBonus.sh -workerid #{userid} -amount 0.10 -reason \"Your browser supports WebGL\" -assignment #{assignmentid}"
-        end
+        #if /exp-webgl-teapot/ =~ experiment_name and c.png != "no webgl" then
+        #  puts "./grantBonus.sh -workerid #{userid} -amount 0.10 -reason \"Your browser supports WebGL\" -assignment #{assignmentid}"
+        #end
 
         c.save
       end
