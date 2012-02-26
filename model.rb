@@ -40,11 +40,9 @@ class Sample < ActiveRecord::Base
 
     return "Linux" if /Linux/ =~ useragent
 
-    return "OSX 10.7.3" if /Mac OS X 10_7_3/ =~ useragent
-    return "OSX 10.7.2" if /Mac OS X 10_7_2/ =~ useragent
-    return "OSX 10.7.1" if /Mac OS X 10_7_1/ =~ useragent
-    return "OSX 10.7.0" if /Mac OS X 10_7_0/ =~ useragent
-    return "OSX 10.6.8" if /Mac OS X 10_6_8/ =~ useragent
+    return "OSX 10.7.#{$1}" if /Mac OS X 10_7_([0-9]+)/ =~ useragent
+    return "OSX 10.6.#{$1}" if /Mac OS X 10_6_([0-9]+)/ =~ useragent
+    return "OSX 10.6" if /Mac OS X 10[_\.]6/ =~ useragent
     return "UNKNOWN"
   end
 
