@@ -51,7 +51,7 @@ class Sample < ActiveRecord::Base
   def graphics_card
     device_id = ""
     device_id = " (Device #{$1.strip})" if /Device ID\r?\n([^\n]*?)\n/m =~ userinput
-    device_id = " (Device #{$1.strip})" if /Device ID(.*)Adapter RAM/m =~ userinput
+    device_id = " (Device #{$1.strip})" if /Device ID(.*?)Adapter RAM/m =~ userinput
     device_id = " (Device #{$1.strip})" if /szDeviceId(.*)/ =~ userinput
 
     # Firefox
