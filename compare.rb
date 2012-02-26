@@ -5,11 +5,14 @@ require 'sinatra/reloader' if development?
 require 'haml'
 require 'facets/hash/except'
 require 'pp'
+require 'RMagick'
+require 'base64'
 
 require_relative 'model.rb'
 require_relative 'experiments.rb'
 
 # gem install activerecord sinatra sinatra-contrib json sqlite3 thin haml facets
+#   rmagick
 
 set :public_folder, File.dirname(__FILE__) + '/static'
 
@@ -134,7 +137,12 @@ get '/exp/:experiment/compare/:id' do |experiment, id|
   # There's no need to display the diff against every element. Use our group-by
   # methodology to only show diffs that matter
   @results = Canvas.where(:experiment_id => @exp.id)
-  @groups = @results.group_by {|x| x.png}.values
+  # We can't use Array's default group_by due to the behavior of Hash key
+  # comparison and RMagick Image .eql? . Write our own!
+  #
+  #@groups = @results.group_by {|x| x.image}.values
+  @groups = @results.group_by_equality {|x| x.image}
+
   @groups.map! { |array| array.sort_by {|x| x.sample.graphics_card} }
   @groups.sort_by! {|group| group[0].sample.browser + group[0].sample.graphics_card}
 
@@ -145,6 +153,7 @@ get '/groups/?' do
   @exps = Experiment.all
   @samples = Sample.all
 
+  ## Not the right sort of grouping
   @groups = @samples.group_by {|sample| sample.canvas.sort {|c| c.experiment_id}.map{|c| c.png}}.values
 
   puts @groups.length
@@ -155,7 +164,9 @@ end
 get '/exp/:experiment/groups/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
   @results = Canvas.find_all_by_experiment_id(@exp.id)
-  @groups = @results.group_by {|x| x.png}.values
+  # Broken for images
+  #@groups = @results.group_by {|x| x.png}.values
+  @groups = @results.group_by_equality {|x| x.image}
 
   # Sort each group by graphics card
   @groups.map! { |array| array.sort_by {|x| x.sample.graphics_card} }

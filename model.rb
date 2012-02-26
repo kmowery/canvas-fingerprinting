@@ -84,6 +84,15 @@ class Canvas < ActiveRecord::Base
     }.to_json(*a)
   end
 
+  def image
+    begin
+      @image ||= Magick::Image.from_blob(Base64.urlsafe_decode64(png.split(",")[-1]))[0]
+    rescue ArgumentError => ae
+      @image = Magick::Image.new(1, 1) { self.background_color = 'black' }
+    end
+    return @image
+  end
+
   def useragent
     return sample.useragent
   end
@@ -145,4 +154,33 @@ class Create < ActiveRecord::Migration
     end
   end
 end
+
+# I hate monkey-patching.
+# But this is idiomatic.
+class Array
+  def group_by_equality()
+    groups = []
+    each {|r|
+      other = groups.each {|g|
+        one = yield g[0]
+        two = yield r
+        if one == two then
+
+          # Custom
+          if g[0].png != r.png then
+            p "#{g[0].sample.browser} #{r.sample.browser} different"
+          end
+
+          g.push(r)
+          break
+        end
+      }
+      if ! other.nil? then
+        groups.push( [r] )
+      end
+    }
+    return groups
+  end
+end
+
 
