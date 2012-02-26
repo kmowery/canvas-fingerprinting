@@ -20,6 +20,9 @@ set :public_folder, File.dirname(__FILE__) + '/static'
 set :protection, :except => :frame_options
 enable :sessions
 
+enable :logging
+set :dump_errors, true
+
 helpers do
   def jsonify(json)
     "JSON.parse('" + json.gsub("'", "\'") + "')"
