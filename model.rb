@@ -35,14 +35,18 @@ class Sample < ActiveRecord::Base
 
   def os
     return "Windows XP" if /Windows NT 5.1/ =~ useragent
+    return "Windows XP Pro" if /Windows NT 5.2/ =~ useragent
     return "Windows Vista" if /Windows NT 6.0/ =~ useragent
     return "Windows 7" if /Windows NT 6.1/ =~ useragent
+    return "Windows 8" if /Windows NT 6.2/ =~ useragent
 
     return "Linux" if /Linux/ =~ useragent
 
     return "OSX 10.7.#{$1}" if /Mac OS X 10_7_([0-9]+)/ =~ useragent
+    return "OSX 10.7" if /Mac OS X 10.7/ =~ useragent
     return "OSX 10.6.#{$1}" if /Mac OS X 10_6_([0-9]+)/ =~ useragent
     return "OSX 10.6" if /Mac OS X 10[_\.]6/ =~ useragent
+    return "OSX 10.5.#{$1}" if /Mac OS X 10_5_([0-9]+)/ =~ useragent
     return "UNKNOWN"
   end
 
@@ -59,12 +63,23 @@ class Sample < ActiveRecord::Base
     return $1.strip + device_id if /Adapter Description(.*?)Vendor ID/ =~ userinput
     return $1.strip + device_id if /Karten-Beschreibung(.*?)Vendor-ID/m =~ userinput
     return $1.strip + device_id if /Description de la carte(.*?)ID du vendeur/m =~ userinput
+    return $1.strip + device_id if /do adaptador(.*?)Vendor ID/m =~ userinput
+
+    # Sometimes FF only has a WebGLRenderer section, not an adapter description section.
+    # Pull it out.
+    return $1.strip + device_id if /Firefox/ =~ browser and /WebGL Renderer(.*?)GPU Accelerated/m =~ userinput
+    return $1.strip + device_id if /Firefox/ =~ browser and /Rendu WebGL(.*?)Fen/m =~ userinput
 
     # Google Chrome
     return $1.strip + device_id if /szDescription(.*)/ =~ userinput
     return $1.strip + device_id if /GL_RENDERER(.*)/ =~ userinput and $1.length > 0
 
     return webglrenderer if /Safari/ =~ browser
+
+    # Custom section
+    return "NVIDIA GeForce 6200" if /NVIDIA GeForce 6200/ =~ userinput
+    return "NVIDIA GeForce GT 440" if /NVIDIA GeForce GT 440/ =~ userinput
+    return "ATI HD5850" if /ATI HD5850/ =~ userinput
 
     return "UNKNOWN"
   end
