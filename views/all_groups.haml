@@ -1,13 +1,17 @@
 
 %nav
+  %a{:href=>"/", :rel => "up"} Experiments
+  &gt;
   %b
-    Groups
+    All Groups
 
-%h2 Results
+%h2 Results (#{@groups.length} groups, #{@samples.length} samples)
 
 - @groups.each do |group|
   %ol
-    %img{:src=>"#{group[0].canvas[0].png}"}
+    - group[0].canvas.each do |c|
+      %img{:src=>"#{c.png}"}
+      %br
     - group.each do |sample|
       %li
         = sample.title

@@ -156,10 +156,17 @@ get '/groups/?' do
   @exps = Experiment.all
   @samples = Sample.all
 
-  ## Not the right sort of grouping
-  @groups = @samples.group_by {|sample| sample.canvas.sort {|c| c.experiment_id}.map{|c| c.png}}.values
+  @groups = @samples.group_by_equality {|sample|
+      sample.canvas.sort_by {|c| c.experiment_id}
+      .map {|x| x.image}
+    }
+  #@groups = @samples.group_by_equality {|sample|
+  #    sample.canvas.sort_by {|c| c.experiment_id}
+  #    .map {|x| x.png}
+  #  }
 
-  puts @groups.length
+  @groups.map! { |array| array.sort_by {|x| x.graphics_card} }
+  @groups.sort_by! {|group| group[0].browser + group[0].graphics_card}
 
   haml :all_groups
 end

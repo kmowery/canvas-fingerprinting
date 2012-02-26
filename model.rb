@@ -186,10 +186,10 @@ class Array
         two = yield r
         if one == two then
 
-          # Custom
-          if g[0].png != r.png then
-            p "#{g[0].sample.browser} #{r.sample.browser} different"
-          end
+          ## Custom
+          #if g[0].png != r.png then
+          #  p "#{g[0].sample.browser} #{r.sample.browser} different"
+          #end
 
           g.push(r)
           break
