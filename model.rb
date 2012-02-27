@@ -77,9 +77,28 @@ class Sample < ActiveRecord::Base
     return webglrenderer if /Safari/ =~ browser
 
     # Custom section
-    return "NVIDIA GeForce 6200" if /NVIDIA GeForce 6200/ =~ userinput
-    return "NVIDIA GeForce GT 440" if /NVIDIA GeForce GT 440/ =~ userinput
+    return "AMD Radeon HD 6670" if /AMD Radeon HD 6670/ =~ userinput
+    return "AMD Radeon HD 7450M" if /AMD Radeon HD 7450M/ =~ userinput
     return "ATI HD5850" if /ATI HD5850/ =~ userinput
+    return "ATI Radeon 9250" if /ATI Radeon 9250/ =~ userinput
+    return "ATI Radeon HD 3200" if /ATI Radeon HD 3200/ =~ userinput
+    return "ATI Radeon X1200" if /ATI Radeon X1200/ =~ userinput
+    return "ATI Radeon X1900" if /ATI Radeon X1900/ =~ userinput
+    return "ATI Radeon XPRESS 200" if /ATI RADEON XPRESS 200/ =~ userinput
+    return "Intel GMA 3100" if /Intel GMA 3100/ =~ userinput
+    return "Intel(R) 82865G" if /Intel\(R\) 82865G/ =~ userinput
+    return "Intel(R) G41 Express Chipset" if /Intel\(R\) G41 Express Chipset/ =~ userinput
+    return "NVIDIA GeForce 6150SE" if /NVIDIA GeForce 6150SE/ =~ userinput
+    return "NVIDIA GeForce 6200" if /NVIDIA GeForce 6200/ =~ userinput
+    return "NVIDIA GeForce 6200" if /\(GeForce 6200\)/ =~ userinput
+    return "NVIDIA GeForce FX 5500" if /Geforce fx5500/ =~ userinput
+    return "NVIDIA GeForce GT 440" if /NVIDIA GeForce GT 440/ =~ userinput
+    return "NVIDIA Quadro 6000" if /NVIDIA Quadro 6000/ =~ userinput
+    return "VIA Intregrated" if /VIA Chrome9 HC IGP/ =~ userinput
+
+    # Last resort
+    return "Intel(R) HD Graphics" if /Intel\(R\) HD Graphics/ =~ userinput
+    return "Intel(R) HD Graphics" if /Inter\(R\) HD Graphics/ =~ userinput
 
     return "UNKNOWN"
   end
