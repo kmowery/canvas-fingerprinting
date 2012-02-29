@@ -7,6 +7,10 @@
     b.notify("pageready");
   });
 
+  #{
+    (0...@groups.length).map {|i| "b.register(\"orig-#{i}\")"}.join("\n")
+  }
+
   // takes a image tag and returns a canvas, properly sized, with the image
   // inside it
   function imgToCanvas(img) {
@@ -82,7 +86,7 @@
 
   #diffs
     - @groups.each_with_index do |group, i|
-      %img{:src=>"#{group[0].png}", :id=>"orig-#{i}"}
+      %img{:src=>"#{group[0].png}", :id=>"orig-#{i}", :onload=>"b.notify(\"orig-#{i}\")"}
       %div{:id=>"attach-#{i}", :style=>"float:right;"}
       %ol
         - group.each do |result|

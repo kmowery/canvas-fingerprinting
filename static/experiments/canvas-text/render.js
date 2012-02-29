@@ -37,7 +37,11 @@ function diff(c1, c2) {
   }
 
   context.putImageData(imageData,0,0);
-  return canvas;
+
+  var img = document.createElement("img");
+  img.src = canvas.toDataURL("image/png");
+  return img;
+  //return canvas;
 }
 
 function diffmap(c1, c2) {
@@ -59,7 +63,10 @@ function diffmap(c1, c2) {
   }
 
   context.putImageData(imageData,0,0);
-  return canvas;
+  var img = document.createElement("img");
+  img.src = canvas.toDataURL("image/png");
+  return img;
+  //return canvas;
 }
 
 
