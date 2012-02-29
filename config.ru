@@ -8,8 +8,8 @@ require 'logger'
 #logger = Rack::CommonLogger.new("log.txt")
 #use Rack::CommonLogger, logger
 
-require 'thin'
-Thin::Logging.trace = :log
+#require 'thin'
+#Thin::Logging.trace = :log
 
 
 require 'sinatra'

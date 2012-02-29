@@ -2,6 +2,10 @@
 %script{:type=>"text/javascript", :src=>"/barrier.js"}
 :javascript
   var b = new Barrier(doDiffs);
+  b.register("pageready");
+  $(document).ready(function() {
+    b.notify("pageready");
+  });
 
   // takes a image tag and returns a canvas, properly sized, with the image
   // inside it
@@ -39,7 +43,9 @@
       }
 
       var attachment_point = document.getElementById("attach-"+i);
-      var canvasinfo = imgToCanvas(document.getElementById("orig-"+i));
+      var id = "orig-"+i;
+      var t = document.getElementById(id);
+      var canvasinfo = imgToCanvas(t);
 
       if(canvasDiffer(prime.canvas, canvasinfo)) {
         var differ = document.createElement("div");
