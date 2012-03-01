@@ -56,6 +56,14 @@ class Sample < ActiveRecord::Base
     device_id = " (Device #{$1.strip})" if /Device ID(.*?)Adapter RAM/m =~ userinput
     device_id = " (Device #{$1.strip})" if /szDeviceId(.*)/ =~ userinput
 
+    # Some people are bad at directions
+    return "UNKNOWN" if /66c3992bb9d989dc30b5624fbeccff7eaf83e848/ =~ userid
+    return "UNKWOWN" if /83b61abcdf0289cfb7b7c12a6947e178bafb6e34/ =~ userid
+    return "UNKWOWN" if /220e7563cae2611e8d3ae7bc22bc65f03209983f/ =~ userid
+
+    return "UNKWOWN" if /87a97a4d3012cc6ec3b5a5f2aabe94f5005a92ee/ =~ userid
+    return "UNKWOWN" if /506e7bd0390bb37fd7864e82431acefd7e2409ed/ =~ userid
+
     # Firefox
     if /Adapter Description\r?\n([^\n]*?)\n/m =~ userinput then
       return $1.strip + device_id
@@ -141,6 +149,10 @@ class Canvas < ActiveRecord::Base
 
   def title
     return sample.title
+  end
+
+  def userid
+    return sample.userid
   end
 end
 
