@@ -13,7 +13,7 @@ registerExperiment("canvas_text_nonsense", function(name, canvasid) {
     return false;
   }
   if(!supportsCanvasText()) {
-    experimentFailed("no canvas text support");
+    experimentFailed("12pt notafont");
     return false;
   }
 

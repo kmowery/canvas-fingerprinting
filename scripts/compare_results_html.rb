@@ -47,6 +47,7 @@ ARGV.each {|filename|
 
         c = Canvas.where(:experiment_id => exp.id, :sample_id => s.id).first
 
+        #pp "Clear" if c.png == row[experiment_name]
         if c.png != row[experiment_name] then
           pp "HERE WE GO"
         end

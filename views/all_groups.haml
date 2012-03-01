@@ -5,7 +5,7 @@
   %b
     All Groups
 
-%h2 Results (#{@groups.length} groups, #{@samples.length} samples)
+%h2 Results (#{@groups.length} groups, #{@samples.length} samples, entropy #{"%.3f"%@entropy})
 
 - @groups.each do |group|
   %ol

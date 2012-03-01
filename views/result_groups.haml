@@ -11,7 +11,7 @@
   Experiment
   %a{:href=>"#{link_to(:exp, @exp)}"} #{@exp.name}
 
-%h2 Results (#{@groups.length} groups, #{@results.length} samples)
+%h2 Results (#{@groups.length} groups, #{@results.length} samples, entropy #{"%.3f"%@entropy})
 
 - @groups.each do |group|
   %img{:src=>"#{group[0].png}"}

@@ -10,6 +10,7 @@ require 'base64'
 
 require_relative 'model.rb'
 require_relative 'experiments.rb'
+require_relative 'print_table.rb'
 
 # gem install activerecord sinatra sinatra-contrib json sqlite3 thin haml facets
 #   rmagick
@@ -154,7 +155,11 @@ end
 
 get '/groups/?' do
   @exps = Experiment.all
-  @samples = Sample.all
+  #@samples = Sample.all
+
+  bad_webfonts = ["A3012E13UK0OAU", "A216TL14D3KS41", "A36JF40S6AVEWB",
+    "A5BO0UHBZQD8T", "A3ULGE1X9TM2MY", "AY7AT22069CO7"]
+  @samples = Sample.where('userid not in (?)', bad_webfonts)
 
   @groups = @samples.group_by_equality {|sample|
       sample.canvas.sort_by {|c| c.experiment_id}
@@ -168,12 +173,27 @@ get '/groups/?' do
   @groups.map! { |array| array.sort_by {|x| x.graphics_card} }
   @groups.sort_by! {|group| group[0].browser + group[0].graphics_card}
 
+  # Calculate entropy
+  @sizes = @groups.map {|x| x.length}
+  @ps = @sizes.map {|s| s.to_f/@samples.length}
+  @terms = @ps.map {|p| p * Math.log(p,2)}
+  @entropy = - @terms.inject(0,:+)
+
   haml :all_groups
 end
 
 get '/exp/:experiment/groups/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
-  @results = Canvas.find_all_by_experiment_id(@exp.id)
+
+  if /webfont/ =~ @exp.name then
+    bad_webfonts = ["A3012E13UK0OAU", "A216TL14D3KS41", "A36JF40S6AVEWB",
+      "A5BO0UHBZQD8T", "A3ULGE1X9TM2MY", "AY7AT22069CO7"]
+    bad_samples = Sample.where("userid in (?)", bad_webfonts).map{|x| x.id}
+    @results = Canvas.where("experiment_id == (?) and sample_id not in (?)", @exp.id, bad_samples);
+  else
+    @results = Canvas.find_all_by_experiment_id(@exp.id)
+  end
+
   # Broken for images
   #@groups = @results.group_by {|x| x.png}.values
   @groups = @results.group_by_equality {|x| x.image}
@@ -182,7 +202,15 @@ get '/exp/:experiment/groups/?' do |experiment|
   @groups.map! { |array| array.sort_by {|x| x.sample.graphics_card} }
 
   # Sort groups by first browser
-  @groups.sort_by! {|group| group[0].sample.browser + group[0].sample.graphics_card}
+  @groups.sort_by! {|group| group[0].sample.graphics_card + group[0].sample.browser }
+
+  print_table @groups
+
+  # Calculate entropy
+  @sizes = @groups.map {|x| x.length}
+  @ps = @sizes.map {|s| s.to_f/@results.length}
+  @terms = @ps.map {|p| p * Math.log(p,2)}
+  @entropy = - @terms.inject(0,:+)
 
   haml :result_groups
 end
