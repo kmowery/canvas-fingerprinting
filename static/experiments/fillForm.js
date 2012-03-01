@@ -21,6 +21,11 @@ function fillForm(experiment, canvas) {
     pixels.innerHTML = base64png;
   }
 
+  var img = document.getElementById("renderhere");
+  if(img !== null) {
+    img.src = base64png;
+  }
+
   var form = document.getElementById("exp-"+experiment);
   if(form === null) {
     // Get the png field from the standard form.

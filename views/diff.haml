@@ -1,14 +1,12 @@
 %script{:type=>"text/javascript", :src=>"/experiments/canvas-text/render.js"}
 %script{:type=>"text/javascript", :src=>"/barrier.js"}
 :javascript
-  var b = new Barrier(doDiffs);
-  b.register("pageready");
-  $(document).ready(function() {
-    b.notify("pageready");
-  });
-
   #{
-    (0...@groups.length).map {|i| "b.register(\"orig-#{i}\")"}.join("\n")
+    (0...@groups.length).map {|i|
+      "var b#{i} = new Barrier(function() {doDiffs(#{i});}); \n" +
+      "b#{i}.register(\"orig-#{i}\"); \n" +
+      "b#{i}.register(\"prime\");\n"
+    }.join("\n")
   }
 
   // takes a image tag and returns a canvas, properly sized, with the image
@@ -24,43 +22,44 @@
   }
 
   // too specialized. Shouldn't take obj here.
-  function makeImageCallback(obj, barrier, tag) {
+  function makeImageCallback(obj) {
     return function() {
       obj.canvas = imgToCanvas(obj.image);
-      barrier.notify(tag);
+      #{
+        (0...@groups.length).map {|i|
+          "b#{i}.notify(\"prime\");"
+        }.join("\n")
+      }
     };
   };
 
   var prime = #{ @result.to_json };
   prime.image = new Image();
   prime.image.src = prime["png"];
-  prime.image.tag = b.register();
-  prime.image.onload = makeImageCallback(prime, b, prime.image.tag);
+  prime.image.onload = makeImageCallback(prime);
 
-  function doDiffs() {
-    for(var i = 0; i < #{@groups.length}; i++) {
-      // If these say "no webgl", skip the diffs
-      // Maybe a leeetle bit hacky.
-      if(#{(0..@groups.length-1).select {|i| @groups[i][0].png == "no webgl"}}.indexOf(i) != -1 ) {
-        // what is going on
-        continue;
-      }
-
-      var attachment_point = document.getElementById("attach-"+i);
-      var id = "orig-"+i;
-      var t = document.getElementById(id);
-      var canvasinfo = imgToCanvas(t);
-
-      if(canvasDiffer(prime.canvas, canvasinfo)) {
-        var differ = document.createElement("div");
-        differ.innerHTML = "Differ!";
-        attachment_point.appendChild(differ);
-      }
-
-      var diffs = diff(prime.canvas, canvasinfo);
-      attachment_point.appendChild(diffs);
-      attachment_point.appendChild(diffmap(prime.canvas, canvasinfo));
+  function doDiffs(i) {
+    // If these say "no webgl", skip the diffs
+    // Maybe a leeetle bit hacky.
+    if(#{(0..@groups.length-1).select {|i| @groups[i][0].png == "no webgl"}}.indexOf(i) != -1 ) {
+      // what is going on
+      return;
     }
+
+    var attachment_point = document.getElementById("attach-"+i);
+    var id = "orig-"+i;
+    var t = document.getElementById(id);
+    var canvasinfo = imgToCanvas(t);
+
+    if(canvasDiffer(prime.canvas, canvasinfo)) {
+      var differ = document.createElement("div");
+      differ.innerHTML = "Differ!";
+      attachment_point.appendChild(differ);
+    }
+
+    var diffs = diff(prime.canvas, canvasinfo);
+    attachment_point.appendChild(diffs);
+    attachment_point.appendChild(diffmap(prime.canvas, canvasinfo));
   }
 
 
@@ -86,7 +85,7 @@
 
   #diffs
     - @groups.each_with_index do |group, i|
-      %img{:src=>"#{group[0].png}", :id=>"orig-#{i}", :onload=>"b.notify(\"orig-#{i}\")"}
+      %img{:src=>"#{group[0].png}", :id=>"orig-#{i}", :onload=>"b#{i}.notify(\"orig-#{i}\")"}
       %div{:id=>"attach-#{i}", :style=>"float:right;"}
       %ol
         - group.each do |result|
