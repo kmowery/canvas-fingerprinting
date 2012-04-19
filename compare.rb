@@ -189,7 +189,11 @@ get '/exp/:experiment/groups/?' do |experiment|
     bad_webfonts = ["A3012E13UK0OAU", "A216TL14D3KS41", "A36JF40S6AVEWB",
       "A5BO0UHBZQD8T", "A3ULGE1X9TM2MY", "AY7AT22069CO7"]
     bad_samples = Sample.where("userid in (?)", bad_webfonts).map{|x| x.id}
-    @results = Canvas.where("experiment_id == (?) and sample_id not in (?)", @exp.id, bad_samples);
+
+    # AR falls over when i pass an empty list to "not in". Work around this.
+    @results = Canvas.where("experiment_id == (?) and sample_id not in (?)",
+                            @exp.id, bad_samples) if bad_samples.length > 0;
+    @results = Canvas.find_all_by_experiment_id(@exp.id) if bad_samples.length == 0;
   else
     @results = Canvas.find_all_by_experiment_id(@exp.id)
   end
