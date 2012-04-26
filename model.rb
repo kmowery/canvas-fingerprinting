@@ -51,10 +51,21 @@ class Sample < ActiveRecord::Base
   end
 
   def graphics_card
+    gc = graphics_card_helper
+    gc.sub!("(Microsoft Corporation - WDDM) ", "");
+    gc.sub!("(Microsoft Corporation - WDDM 1.0) ", "");
+    gc.sub!("(Microsoft Corporation - WDDM 1.1) ", "")
+    return gc
+  end
+
+  def graphics_card_helper
     device_id = ""
     device_id = " (Device #{$1.strip})" if /Device ID\r?\n([^\n]*?)\n/m =~ userinput
     device_id = " (Device #{$1.strip})" if /Device ID(.*?)Adapter RAM/m =~ userinput
     device_id = " (Device #{$1.strip})" if /szDeviceId(.*)/ =~ userinput
+    device_id.sub!("0x", "")
+    device_id.downcase!   # this downcases the hex
+    device_id.sub!("device", "Device");
 
     # Some people are bad at directions
     return "UNKNOWN" if /66c3992bb9d989dc30b5624fbeccff7eaf83e848/ =~ userid

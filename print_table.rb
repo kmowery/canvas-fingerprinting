@@ -1,3 +1,10 @@
+def clean_browser(b)
+  return "Chrome " + $1 if /Chrome ([0-9]+)/ =~ b
+  return "Firefox " + $1 if /Firefox ([0-9]+)/ =~ b
+  return "Safari " + $1 if /Safari ([0-9]+)/ =~ b
+  return "Opera " + $1 if /Opera ([0-9]+)/ =~ b
+  return "nope"
+end
 
 def browsers(group)
   browsers = group.map {|x| x.sample.browser }.sort.uniq
@@ -45,6 +52,20 @@ def oses(group)
 end
 
 def print_table(groups)
-  puts groups.each_with_index.map {|g, i| " #{i+1} & #{g.length} & #{browsers g} & #{graphics_cards g} & #{oses g}" }.join("\n")
+  #puts groups.each_with_index.map {|g, i| " #{i+1} & #{g.length} & #{browsers g} & #{graphics_cards g} & #{oses g}" }.join("\n")
+
+  groups.each_with_index {|g,i|
+    results = g.inject( Hash.new(0)) {|h,i| h[ {:os => i.sample.os, :browser => clean_browser(i.sample.browser), :graphics => i.sample.graphics_card} ] += 1; h }
+    keys = results.keys.sort_by {|r| r[:graphics] + r[:browser] + r[:os] }
+
+    group = i+1
+
+    keys.each {|k|
+      puts " #{group} & #{results[k]} & #{k[:graphics]} & #{k[:browser]} & #{k[:os]} \\\\"
+      group = ""
+    }
+  }
+
+  puts "\n"
 end
 
