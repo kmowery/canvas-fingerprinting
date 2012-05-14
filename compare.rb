@@ -157,8 +157,13 @@ get '/groups/?' do
   @exps = Experiment.all
   #@samples = Sample.all
 
-  bad_webfonts = ["A3012E13UK0OAU", "A216TL14D3KS41", "A36JF40S6AVEWB",
-    "A5BO0UHBZQD8T", "A3ULGE1X9TM2MY", "AY7AT22069CO7"]
+  # These samples returned a blank image for webfonts. Ignore them.
+  bad_webfonts = ["6cfc2b99097478da536bbc679f77408ad0fa39f9",
+    "54b3bfcaae757a0138cd8e8162e610aed62718c7",
+    "0476b094ed0733e8c1b74f029eafb5452b1edaec",
+    "a2ed9206fe11e99815a7f78a860f5ae28f51f921",
+    "7c76963cab9fc94e912045a933d3640a91543751",
+    "142d3ea80df149a520710af60ecb671331397a19"]
   @samples = Sample.where('userid not in (?)', bad_webfonts)
 
   @groups = @samples.group_by_equality {|sample|
@@ -186,8 +191,13 @@ get '/exp/:experiment/groups/?' do |experiment|
   @exp = Experiment.where(:name => experiment).first
 
   if /webfont/ =~ @exp.name then
-    bad_webfonts = ["A3012E13UK0OAU", "A216TL14D3KS41", "A36JF40S6AVEWB",
-      "A5BO0UHBZQD8T", "A3ULGE1X9TM2MY", "AY7AT22069CO7"]
+    # These samples returned a blank image for webfonts. Ignore them.
+    bad_webfonts = ["6cfc2b99097478da536bbc679f77408ad0fa39f9",
+      "54b3bfcaae757a0138cd8e8162e610aed62718c7",
+      "0476b094ed0733e8c1b74f029eafb5452b1edaec",
+      "a2ed9206fe11e99815a7f78a860f5ae28f51f921",
+      "7c76963cab9fc94e912045a933d3640a91543751",
+      "142d3ea80df149a520710af60ecb671331397a19"]
     bad_samples = Sample.where("userid in (?)", bad_webfonts).map{|x| x.id}
 
     # AR falls over when i pass an empty list to "not in". Work around this.
