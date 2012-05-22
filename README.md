@@ -129,3 +129,10 @@ $ ./loadHITs.sh -maxhits 5 -input ~/src/canvas-fingerprinting/mt_config/js_hit.i
 Refer to the Mechanical Turk documentation for setup and configuration of the
 command line tools and for further instructions on this step.
 
+Notes
+-----
+I seem to remember adding a feature to MT mode whereby the mechanical turk
+worker will post their results back to me before sending them to Amazon, thus
+skipping the annoying HTML import method. This _should_ be working. You'll need
+to enter your server's address in `/views/mt.haml`, though. There should
+probably be a switch for this.
