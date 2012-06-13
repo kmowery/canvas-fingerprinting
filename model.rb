@@ -51,76 +51,76 @@ class Sample < ActiveRecord::Base
   end
 
   def graphics_card
-    return actual_graphics_card
+    return actual_graphics_card unless actual_graphics_card.nil?
 
-    #gc = graphics_card_helper
-    #gc.sub!("(Microsoft Corporation - WDDM) ", "");
-    #gc.sub!("(Microsoft Corporation - WDDM 1.0) ", "");
-    #gc.sub!("(Microsoft Corporation - WDDM 1.1) ", "")
-    #return gc
+    gc = graphics_card_helper
+    gc.sub!("(Microsoft Corporation - WDDM) ", "");
+    gc.sub!("(Microsoft Corporation - WDDM 1.0) ", "");
+    gc.sub!("(Microsoft Corporation - WDDM 1.1) ", "")
+    return gc
   end
 
-  #def graphics_card_helper
-  #  device_id = ""
-  #  device_id = " (Device #{$1.strip})" if /Device ID\r?\n([^\n]*?)\n/m =~ userinput
-  #  device_id = " (Device #{$1.strip})" if /Device ID(.*?)Adapter RAM/m =~ userinput
-  #  device_id = " (Device #{$1.strip})" if /szDeviceId(.*)/ =~ userinput
-  #  device_id.sub!("0x", "")
-  #  device_id.downcase!   # this downcases the hex
-  #  device_id.sub!("device", "Device");
+  def graphics_card_helper
+    device_id = ""
+    device_id = " (Device #{$1.strip})" if /Device ID\r?\n([^\n]*?)\n/m =~ userinput
+    device_id = " (Device #{$1.strip})" if /Device ID(.*?)Adapter RAM/m =~ userinput
+    device_id = " (Device #{$1.strip})" if /szDeviceId(.*)/ =~ userinput
+    device_id.sub!("0x", "")
+    device_id.downcase!   # this downcases the hex
+    device_id.sub!("device", "Device");
 
-  #  # Some people are bad at directions
-  #  return "UNKNOWN" if /66c3992bb9d989dc30b5624fbeccff7eaf83e848/ =~ userid
-  #  return "UNKWOWN" if /83b61abcdf0289cfb7b7c12a6947e178bafb6e34/ =~ userid
-  #  return "UNKWOWN" if /220e7563cae2611e8d3ae7bc22bc65f03209983f/ =~ userid
+    # Some people are bad at directions
+    return "UNKNOWN" if /66c3992bb9d989dc30b5624fbeccff7eaf83e848/ =~ userid
+    return "UNKWOWN" if /83b61abcdf0289cfb7b7c12a6947e178bafb6e34/ =~ userid
+    return "UNKWOWN" if /220e7563cae2611e8d3ae7bc22bc65f03209983f/ =~ userid
 
-  #  return "UNKWOWN" if /87a97a4d3012cc6ec3b5a5f2aabe94f5005a92ee/ =~ userid
-  #  return "UNKWOWN" if /506e7bd0390bb37fd7864e82431acefd7e2409ed/ =~ userid
+    return "UNKWOWN" if /87a97a4d3012cc6ec3b5a5f2aabe94f5005a92ee/ =~ userid
+    return "UNKWOWN" if /506e7bd0390bb37fd7864e82431acefd7e2409ed/ =~ userid
 
-  #  # Firefox
-  #  if /Adapter Description\r?\n([^\n]*?)\n/m =~ userinput then
-  #    return $1.strip + device_id
-  #  end
-  #  return $1.strip + device_id if /Adapter Description(.*?)Vendor ID/ =~ userinput
-  #  return $1.strip + device_id if /Karten-Beschreibung(.*?)Vendor-ID/m =~ userinput
-  #  return $1.strip + device_id if /Description de la carte(.*?)ID du vendeur/m =~ userinput
-  #  return $1.strip + device_id if /do adaptador(.*?)Vendor ID/m =~ userinput
+    # Firefox
+    if /Adapter Description\r?\n([^\n]*?)\n/m =~ userinput then
+      return $1.strip + device_id
+    end
+    return $1.strip + device_id if /Adapter Description(.*?)Vendor ID/ =~ userinput
+    return $1.strip + device_id if /Karten-Beschreibung(.*?)Vendor-ID/m =~ userinput
+    return $1.strip + device_id if /Description de la carte(.*?)ID du vendeur/m =~ userinput
+    return $1.strip + device_id if /do adaptador(.*?)Vendor ID/m =~ userinput
 
-  #  # Sometimes FF only has a WebGLRenderer section, not an adapter description section.
-  #  # Pull it out.
-  #  return $1.strip + device_id if /Firefox/ =~ browser and /WebGL Renderer(.*?)GPU Accelerated/m =~ userinput
-  #  return $1.strip + device_id if /Firefox/ =~ browser and /Rendu WebGL(.*?)Fen/m =~ userinput
+    # Sometimes FF only has a WebGLRenderer section, not an adapter description section.
+    # Pull it out.
+    return $1.strip + device_id if /Firefox/ =~ browser and /WebGL Renderer(.*?)GPU Accelerated/m =~ userinput
+    return $1.strip + device_id if /Firefox/ =~ browser and /Rendu WebGL(.*?)Fen/m =~ userinput
 
-  #  # Google Chrome
-  #  return $1.strip + device_id if /szDescription(.*)/ =~ userinput
-  #  return $1.strip + device_id if /GL_RENDERER(.*)/ =~ userinput and $1.length > 0
+    # Google Chrome
+    return $1.strip + device_id if /szDescription(.*)/ =~ userinput
+    return $1.strip + device_id if /GL_RENDERER(.*)/ =~ userinput and $1.length > 0
 
-  #  return webglrenderer if /Safari/ =~ browser
+    return webglrenderer if /Safari/ =~ browser
 
-  #  # Custom section
-  #  return "AMD Radeon HD 6670" if /AMD Radeon HD 6670/ =~ userinput
-  #  return "AMD Radeon HD 7450M" if /AMD Radeon HD 7450M/ =~ userinput
-  #  return "ATI HD5850" if /ATI HD5850/ =~ userinput
-  #  return "ATI Radeon 9250" if /ATI Radeon 9250/ =~ userinput
-  #  return "ATI Radeon HD 3200" if /ATI Radeon HD 3200/ =~ userinput
-  #  return "ATI Radeon X1200" if /ATI Radeon X1200/ =~ userinput
-  #  return "ATI Radeon X1900" if /ATI Radeon X1900/ =~ userinput
-  #  return "ATI Radeon XPRESS 200" if /ATI RADEON XPRESS 200/ =~ userinput
-  #  return "Intel GMA 3100" if /Intel GMA 3100/ =~ userinput
-  #  return "Intel(R) 82865G" if /Intel\(R\) 82865G/ =~ userinput
-  #  return "Intel(R) G41 Express Chipset" if /Intel\(R\) G41 Express Chipset/ =~ userinput
-  #  return "NVIDIA GeForce 6150SE" if /NVIDIA GeForce 6150SE/ =~ userinput
-  #  return "NVIDIA GeForce 6200" if /NVIDIA GeForce 6200/ =~ userinput
-  #  return "NVIDIA GeForce 6200" if /\(GeForce 6200\)/ =~ userinput
-  #  return "NVIDIA GeForce FX 5500" if /Geforce fx5500/ =~ userinput
-  #  return "NVIDIA GeForce GT 440" if /NVIDIA GeForce GT 440/ =~ userinput
-  #  return "NVIDIA Quadro 6000" if /NVIDIA Quadro 6000/ =~ userinput
-  #  return "VIA Intregrated" if /VIA Chrome9 HC IGP/ =~ userinput
+    # Custom section
+    return "AMD Radeon HD 6670" if /AMD Radeon HD 6670/ =~ userinput
+    return "AMD Radeon HD 7450M" if /AMD Radeon HD 7450M/ =~ userinput
+    return "ATI HD5850" if /ATI HD5850/ =~ userinput
+    return "ATI Radeon 9250" if /ATI Radeon 9250/ =~ userinput
+    return "ATI Radeon HD 3200" if /ATI Radeon HD 3200/ =~ userinput
+    return "ATI Radeon X1200" if /ATI Radeon X1200/ =~ userinput
+    return "ATI Radeon X1900" if /ATI Radeon X1900/ =~ userinput
+    return "ATI Radeon XPRESS 200" if /ATI RADEON XPRESS 200/ =~ userinput
+    return "Intel GMA 3100" if /Intel GMA 3100/ =~ userinput
+    return "Intel(R) 82865G" if /Intel\(R\) 82865G/ =~ userinput
+    return "Intel(R) G41 Express Chipset" if /Intel\(R\) G41 Express Chipset/ =~ userinput
+    return "NVIDIA GeForce 6150SE" if /NVIDIA GeForce 6150SE/ =~ userinput
+    return "NVIDIA GeForce 6200" if /NVIDIA GeForce 6200/ =~ userinput
+    return "NVIDIA GeForce 6200" if /\(GeForce 6200\)/ =~ userinput
+    return "NVIDIA GeForce FX 5500" if /Geforce fx5500/ =~ userinput
+    return "NVIDIA GeForce GT 440" if /NVIDIA GeForce GT 440/ =~ userinput
+    return "NVIDIA Quadro 6000" if /NVIDIA Quadro 6000/ =~ userinput
+    return "VIA Intregrated" if /VIA Chrome9 HC IGP/ =~ userinput
 
-  #  # Last resort
-  #  return "Intel(R) HD Graphics" if /Intel\(R\) HD Graphics/ =~ userinput
-  #  return "Intel(R) HD Graphics" if /Inter\(R\) HD Graphics/ =~ userinput
-  #end
+    # Last resort
+    return "Intel(R) HD Graphics" if /Intel\(R\) HD Graphics/ =~ userinput
+    return "Intel(R) HD Graphics" if /Inter\(R\) HD Graphics/ =~ userinput
+  end
 
   def title
     return "(#{graphics_card}) (#{browser}) (#{os})"
