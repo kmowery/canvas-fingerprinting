@@ -78,21 +78,24 @@ post '/exp/:experiment/results' do |experiment|
   @exp = Experiment.where(:name => experiment).first
 
   # Policy: we store one sample per user-agent and title combination.
-  @result = Canvas.where(:useragent => env["HTTP_USER_AGENT"],
-                         :experiment_id => @exp.id,
-                         :title => params["title"]).first
+  @sample = Sample.where(:useragent => env["HTTP_USER_AGENT"],
+                          :userinput => params["title"]).first
+
+  if @sample.nil? then
+    @sample = Sample.create()
+    @sample.useragent = env["HTTP_USER_AGENT"]
+    @sample.userinput = params["title"]
+    @sample.save
+  end
+
+  @result = Canvas.where(:sample_id => @sample.id,
+                         :experiment_id => @exp.id).first
 
   puts "Creating new canvas" if @result.nil?
   @result = Canvas.create() if @result.nil?
 
-  sample = Sample.new
-  sample.useragent = env["HTTP_USER_AGENT"]
-  sample.userinput = params["title"]
-  sample.save
-
   @result.experiment_id = @exp.id
-  @result.sample_id = sample.id
-  @result.title = params["title"]
+  @result.sample_id = @sample.id
   @result.pixels = params["pixels"]
   @result.png = params["png"]
   @result.save
