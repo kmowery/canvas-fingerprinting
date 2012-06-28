@@ -61,6 +61,9 @@ class Sample < ActiveRecord::Base
   end
 
   def graphics_card_helper
+    return "UNKNOWN" if userinput.nil?
+    return "UNKNOWN" if userinput.length() == 0
+
     device_id = ""
     device_id = " (Device #{$1.strip})" if /Device ID\r?\n([^\n]*?)\n/m =~ userinput
     device_id = " (Device #{$1.strip})" if /Device ID(.*?)Adapter RAM/m =~ userinput
@@ -120,6 +123,7 @@ class Sample < ActiveRecord::Base
     # Last resort
     return "Intel(R) HD Graphics" if /Intel\(R\) HD Graphics/ =~ userinput
     return "Intel(R) HD Graphics" if /Inter\(R\) HD Graphics/ =~ userinput
+    return "UNKNOWN"
   end
 
   def title
