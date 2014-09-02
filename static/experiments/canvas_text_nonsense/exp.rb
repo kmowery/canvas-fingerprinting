@@ -1,5 +1,5 @@
 
-canvas_text_nonsense = Experiment.find_or_create_by_name('canvas_text_nonsense')
+canvas_text_nonsense = Experiment.where(name: 'canvas_text_nonsense').first_or_create
 canvas_text_nonsense.name = "canvas_text_nonsense"
 canvas_text_nonsense.canvas_size = {:width => 415, :height => 30}
 canvas_text_nonsense.scripts = [

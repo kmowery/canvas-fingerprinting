@@ -67,7 +67,7 @@ Adding a New Experiment
    `/static/experiments/foo/exp.rb`:
 
    ```ruby
-   foo = Experiment.find_or_create_by_name('foo')
+   foo = Experiment.where(name: 'foo').first_or_create
    foo.name = "foo"
    foo.canvas_size = {:width => 415, :height => 30}
    foo.scripts = ["/experiments/foo/run.js"]

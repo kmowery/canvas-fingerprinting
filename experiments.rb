@@ -10,7 +10,7 @@ Find.find("./static") do |path|
 end
 
 
-dev = Experiment.find_or_create_by_name('dev')
+dev = Experiment.where(name: 'dev').first_or_create
 dev.name = "dev"
 dev.canvas_size = {:width => 150, :height => 15}
 dev.scripts = ["/experiments/dev/run.js"]
@@ -18,7 +18,7 @@ dev.links = [ {:href=>"http://fonts.googleapis.com/css?family=Lusitana", :rel=>'
 dev.mt = false
 dev.save
 
-webgl_teapot = Experiment.find_or_create_by_name('webgl-teapot')
+webgl_teapot = Experiment.where(name: 'webgl-teapot').first_or_create
 webgl_teapot.name = "webgl-teapot"
 webgl_teapot.canvas_size = {:width => 250, :height => 250}
 webgl_teapot.scripts = [

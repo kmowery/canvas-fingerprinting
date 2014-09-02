@@ -46,8 +46,7 @@ helpers do
 end
 
 get '/' do
-  @experiments = Experiment.all
-  @experiments.sort_by! {|exp| exp.name}
+  @experiments = Experiment.order("name").all
   haml :list_experiments
 end
 
@@ -206,9 +205,9 @@ get '/exp/:experiment/groups/?' do |experiment|
     # AR falls over when i pass an empty list to "not in". Work around this.
     @results = Canvas.where("experiment_id == (?) and sample_id not in (?)",
                             @exp.id, bad_samples) if bad_samples.length > 0;
-    @results = Canvas.find_all_by_experiment_id(@exp.id) if bad_samples.length == 0;
+    @results = Canvas.where(experiment_id: @exp.id) if bad_samples.length == 0;
   else
-    @results = Canvas.find_all_by_experiment_id(@exp.id)
+    @results = Canvas.where(experiment_id: @exp.id)
   end
 
   # Broken for images

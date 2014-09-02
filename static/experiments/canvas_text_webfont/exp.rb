@@ -1,5 +1,5 @@
 
-canvas_text_webfont = Experiment.find_or_create_by_name('canvas_text_webfont')
+canvas_text_webfont = Experiment.where(name: 'canvas_text_webfont').first_or_create
 canvas_text_webfont.name = "canvas_text_webfont"
 canvas_text_webfont.canvas_size = {:width => 415, :height => 30}
 canvas_text_webfont.scripts = [

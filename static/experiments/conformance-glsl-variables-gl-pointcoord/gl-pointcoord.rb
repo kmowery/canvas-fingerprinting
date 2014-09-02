@@ -1,5 +1,5 @@
 
-gl_pointcoord = Experiment.find_or_create_by_name('conformance-gl-pointcoord')
+gl_pointcoord = Experiment.where(name: 'conformance-gl-pointcoord').first_or_create
 gl_pointcoord.name = "conformance-gl-pointcoord"
 gl_pointcoord.canvas_size = {:width => 256, :height => 256}
 gl_pointcoord.scripts = [
